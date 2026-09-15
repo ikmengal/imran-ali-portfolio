@@ -88,6 +88,7 @@ class SkillController extends AdminController
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_visible'] = $request->boolean('is_visible', true);
+        $validated['user_id'] = auth()->id();
 
         Skill::create($validated);
 

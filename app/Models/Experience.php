@@ -11,6 +11,7 @@ class Experience extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'job_title',
         'company',
         'employment_type',
@@ -38,5 +39,10 @@ class Experience extends Model
     public function scopeOrdered($query)
     {
         return $query->orderByDesc('start_date');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

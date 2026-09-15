@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Skill;
+use App\Models\User;
 
 class SkillSeeder extends Seeder
 {
@@ -14,6 +15,14 @@ class SkillSeeder extends Seeder
     public function run(): void
     {
         Skill::query()->delete();
+
+        $user = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->first() ?? User::first();
+
+        if (!$user) {
+            return;
+        }
 
         $skills = [
             [
@@ -69,6 +78,7 @@ class SkillSeeder extends Seeder
 
         foreach ($skills as $index => $skill) {
             Skill::create([
+                'user_id' => $user->id,
                 ...$skill,
                 'is_visible' => true,
                 'sort_order' => $index + 1,

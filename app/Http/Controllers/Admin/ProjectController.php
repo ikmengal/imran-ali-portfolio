@@ -105,6 +105,7 @@ class ProjectController extends AdminController
         $validated['slug'] = Str::slug($validated['title']);
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_visible'] = $request->boolean('is_visible', true);
+        $validated['user_id'] = auth()->id();
 
         $project = Project::create($validated);
 
@@ -112,6 +113,7 @@ class ProjectController extends AdminController
             foreach ($request->technologies as $index => $tech) {
                 ProjectTechnology::create([
                     'project_id' => $project->id,
+                    'user_id' => auth()->id(),
                     'name' => $tech['name'],
                     'sort_order' => $tech['sort_order'] ?? $index,
                 ]);
@@ -169,6 +171,7 @@ class ProjectController extends AdminController
             foreach ($request->technologies as $index => $tech) {
                 ProjectTechnology::create([
                     'project_id' => $project->id,
+                    'user_id' => auth()->id(),
                     'name' => $tech['name'],
                     'sort_order' => $tech['sort_order'] ?? $index,
                 ]);

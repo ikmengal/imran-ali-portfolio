@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Education;
+use App\Models\User;
 
 class EducationSeeder extends Seeder
 {
@@ -15,7 +16,16 @@ class EducationSeeder extends Seeder
     {
         Education::query()->delete();
 
+        $user = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->first() ?? User::first();
+
+        if (!$user) {
+            return;
+        }
+
         Education::create([
+            'user_id' => $user->id,
             'degree' => 'Bachelor of Science in Computer Science',
             'institution' => 'Your University',
             'field' => 'Computer Science',

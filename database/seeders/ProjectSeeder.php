@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Project;
+use App\Models\User;
 
 class ProjectSeeder extends Seeder
 {
@@ -15,7 +16,16 @@ class ProjectSeeder extends Seeder
     {
         Project::query()->delete();
 
+        $user = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->first() ?? User::first();
+
+        if (!$user) {
+            return;
+        }
+
         $project = Project::create([
+            'user_id' => $user->id,
             'title' => 'Travel Management System',
             'slug' => 'travel-management-system',
             'short_description' => 'A complete digital travel management and approval platform.',
@@ -41,12 +51,14 @@ class ProjectSeeder extends Seeder
 
         foreach ($technologies as $index => $technology) {
             $project->technologies()->create([
+                'user_id' => $user->id,
                 'name' => $technology,
                 'sort_order' => $index + 1,
             ]);
         }
 
         $project = Project::create([
+            'user_id' => $user->id,
             'title' => 'Learning Management System',
             'slug' => 'learning-management-system',
             'short_description' => 'A modern LMS for courses, students, instructors and learning management.',
@@ -71,6 +83,7 @@ class ProjectSeeder extends Seeder
             ] as $index => $technology
         ) {
             $project->technologies()->create([
+                'user_id' => $user->id,
                 'name' => $technology,
                 'sort_order' => $index + 1,
             ]);

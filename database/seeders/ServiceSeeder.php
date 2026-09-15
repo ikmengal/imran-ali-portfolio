@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Service;
+use App\Models\User;
 
 class ServiceSeeder extends Seeder
 {
@@ -14,6 +15,14 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
         Service::query()->delete();
+
+        $user = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->first() ?? User::first();
+
+        if (!$user) {
+            return;
+        }
 
         $services = [
             [
@@ -45,6 +54,7 @@ class ServiceSeeder extends Seeder
 
         foreach ($services as $index => $service) {
             Service::create([
+                'user_id' => $user->id,
                 ...$service,
                 'is_featured' => true,
                 'is_visible' => true,

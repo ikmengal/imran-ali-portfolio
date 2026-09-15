@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Testimonial;
+use App\Models\User;
 
 class TestimonialSeeder extends Seeder
 {
@@ -15,7 +16,16 @@ class TestimonialSeeder extends Seeder
     {
         Testimonial::query()->delete();
 
+        $user = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->first() ?? User::first();
+
+        if (!$user) {
+            return;
+        }
+
         Testimonial::create([
+            'user_id' => $user->id,
             'name' => 'John Doe',
             'designation' => 'Project Manager',
             'company' => 'Technology Company',
@@ -27,6 +37,7 @@ class TestimonialSeeder extends Seeder
         ]);
 
         Testimonial::create([
+            'user_id' => $user->id,
             'name' => 'Jane Smith',
             'designation' => 'Product Manager',
             'company' => 'Software Company',

@@ -11,6 +11,7 @@ class Testimonial extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'name',
         'designation',
         'company',
@@ -34,5 +35,10 @@ class Testimonial extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

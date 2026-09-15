@@ -11,6 +11,7 @@ class Service extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'title',
         'icon',
         'description',
@@ -37,5 +38,10 @@ class Service extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

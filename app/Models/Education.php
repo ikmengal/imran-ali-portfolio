@@ -11,6 +11,7 @@ class Education extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'degree',
         'institution',
         'field',
@@ -36,5 +37,10 @@ class Education extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

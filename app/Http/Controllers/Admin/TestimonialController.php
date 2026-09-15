@@ -89,6 +89,7 @@ class TestimonialController extends AdminController
         }
 
         $validated['is_visible'] = $request->boolean('is_visible', true);
+        $validated['user_id'] = auth()->id();
 
         Testimonial::create($validated);
 

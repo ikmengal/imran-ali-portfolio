@@ -11,6 +11,7 @@ class ContactMessage extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'subject',
@@ -30,5 +31,10 @@ class ContactMessage extends Model
     public function scopeRead($query)
     {
         return $query->whereNotNull('read_at');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

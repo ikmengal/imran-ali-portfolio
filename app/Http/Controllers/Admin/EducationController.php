@@ -84,6 +84,7 @@ class EducationController extends AdminController
 
         $validated['is_current'] = $request->boolean('is_current');
         $validated['is_visible'] = $request->boolean('is_visible', true);
+        $validated['user_id'] = auth()->id();
 
         if ($validated['is_current']) {
             $validated['end_year'] = null;

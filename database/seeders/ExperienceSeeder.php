@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Experience;
+use App\Models\User;
 
 class ExperienceSeeder extends Seeder
 {
@@ -15,7 +16,16 @@ class ExperienceSeeder extends Seeder
     {
         Experience::query()->delete();
 
+        $user = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->first() ?? User::first();
+
+        if (!$user) {
+            return;
+        }
+
         Experience::create([
+            'user_id' => $user->id,
             'job_title' => 'Laravel Backend Developer',
             'company' => 'Your Company',
             'employment_type' => 'Full Time',
@@ -29,6 +39,7 @@ class ExperienceSeeder extends Seeder
         ]);
 
         Experience::create([
+            'user_id' => $user->id,
             'job_title' => 'PHP Laravel Developer',
             'company' => 'Previous Company',
             'employment_type' => 'Full Time',
