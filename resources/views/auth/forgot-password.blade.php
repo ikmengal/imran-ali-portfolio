@@ -1,43 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <div>
-            <h2 class="text-center text-3xl font-extrabold text-gray-900">Forgot Password</h2>
-            <p class="mt-2 text-center text-sm text-gray-600">Enter your email to receive a password reset link</p>
+@extends('auth.master')
+@push('title', 'Forgot Password')
+
+@section('content')
+    <!-- Content -->
+    <div class="authentication-wrapper authentication-cover authentication-bg">
+        <div class="authentication-inner row">
+            <!-- /Left Text -->
+            <div class="d-none d-lg-flex col-lg-7 p-0">
+                <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
+                    <img
+                    src="{{ asset('admin/assets/img/illustrations/auth-forgot-password-illustration-light.png') }}"
+                    alt="auth-forgot-password-cover"
+                    class="img-fluid my-5 auth-illustration"
+                    data-app-light-img="illustrations/auth-forgot-password-illustration-light.png"
+                    data-app-dark-img="illustrations/auth-forgot-password-illustration-dark.png"
+                    />
+                </div>
+            </div>
+            <!-- /Left Text -->
+
+            <!-- Forgot Password -->
+            <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
+                <div class="w-px-500 mx-auto">
+                    <!-- Logo -->
+                    <div class="app-brand mb-4">
+                        <a href="{{ route('login') }}" class="app-brand-link gap-2">
+                            <span class="app-brand">
+                                @if(isset(setting()->logo) && !empty(setting()->logo))
+                                    <img width="250" src="{{ asset('admin/assets/settings') }}/{{ setting()->logo }}" class="img-fluid light-logo" alt="Logo" />
+                                @else
+                                    <img width="250" src="{{ asset('admin/assets/logo/vertical-b-logo.png') }}" class="img-fluid " alt="Logo" />
+                                @endif
+                            </span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <h3 class="mb-1 fw-bold">Forgot Password? 👋</h3>
+                    <p class="mb-4">Enter your email and we'll send you a reset link</p>
+
+                    @if (session('status'))
+                        <div id="errorMessage" class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div id="errorMessage" class="alert alert-danger">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+
+                    <form id="forgotPasswordForm" class="mb-3" action="{{ route('password.email') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required autofocus />
+                            <span class="text-danger">{{ $errors->first('email') }}</span>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="submit" class="btn btn-primary d-grid w-100">Send Reset Link</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-4">
+                        Remember your password?
+                        <a href="{{ route('login') }}" class="fw-medium text-primary"> Sign in</a>
+                    </p>
+                </div>
+            </div>
+            <!-- /Forgot Password -->
         </div>
-        <form class="mt-8 space-y-6" method="POST" action="{{ route('password.email') }}">
-            @csrf
-            <div>
-                <label for="email" class="sr-only">Email address</label>
-                <input id="email" name="email" type="email" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email address">
-            </div>
-
-            @if (session('status'))
-                <div class="text-green-600 text-sm">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="text-red-600 text-sm">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Send Reset Link
-                </button>
-            </div>
-        </form>
-        <p class="text-center text-sm text-gray-600"><a href="{{ route('login') }}" class="font-medium text-blue-600 hover:text-blue-500">Back to login</a></p>
     </div>
-</body>
-</html>
+    <!-- Content -->
+@endsection

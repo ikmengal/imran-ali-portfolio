@@ -1,101 +1,244 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-    <div class="app-brand demo">
+    <div class="app-brand demo mb-2">
         <a href="{{ route('admin.dashboard') }}" class="app-brand-link">
-            <span class="app-brand-logo demo">
-                <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <defs>
-                        <path d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z" id="path-1"></path>
-                        <path d="M13.7918663,0.358365126 L13.7918663,0.358365126" id="path-3"></path>
-                        <path d="M13.7918663,0.358365126 L13.7918663,0.358365126" id="path-4"></path>
-                        <path d="M13.7918663,0.358365126 L13.7918663,0.358365126" id="path-5"></path>
-                    </defs>
-                    <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                        <g id="Brand-Logo" transform="translate(-27.000000, -15.000000)">
-                            <g id="Icon" transform="translate(27.000000, 15.000000)">
-                                <path class="text-primary" d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z" id="path-1"></path>
-                                <path class="text-primary" opacity="0.6" d="M13.7918663,0.358365126 L13.7918663,0.358365126" id="path-3"></path>
-                                <path class="text-primary" opacity="0.6" d="M13.7918663,0.358365126 L13.7918663,0.358365126" id="path-4"></path>
-                                <path class="text-primary" opacity="0.6" d="M13.7918663,0.358365126 L13.7918663,0.358365126" id="path-5"></path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>
-            <span class="app-brand-text demo menu-text fw-bolder ms-2">Admin Panel</span>
-        </a>
-        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-            <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            @if (checkRocketFlareUser() == 1 && checkRocketFlareUser() != 2)
+                <input type="hidden" value="{{ checkRocketFlareUser() ?? '0' }}">
+                <img src="{{ asset('public/admin/assets/img/rocketflare/light-logo.png') }}" class="img-fluid light-logo img-logo" alt="Rocket Flare" />
+                <img src="{{ asset('public/admin/assets/img/rocketflare/light-logo.png') }}" class="img-fluid dark-logo img-logo" alt="Rocket Flare" />
+            @else
+                @if (isset(setting()->white_logo) && !empty(setting()->white_logo))
+                    <img src="{{ asset('admin/assets/settings') }}/{{ setting()->white_logo }}" class="img-fluid dark-logo img-logo" alt="{{ setting()->white_name }}" />
+                @else
+                    <img src="{{ asset('admin/assets/logo/vertical-w-logo.png') }}" class="img-fluid light-logo img-logo" alt="Client Onboarding" />
+                    <img src="{{ asset('admin/assets/logo/vertical-b-logo.png') }}" class="img-fluid dark-logo img-logo" alt="Client Onboarding" />
+                @endif
+            @endif
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+                <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
+                <i class="ti ti-x d-block d-xl-none ti-sm align-middle"></i>
+            </a>
         </a>
     </div>
+
     <div class="menu-inner-shadow"></div>
-    <ul class="menu-inner py-1">
-        <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+
+    <ul class="menu-inner py-1 my-1">
+        <li class="menu-item {{ Route::is('admin.dashboard*') ? 'active' : ''}}">
             <a href="{{ route('admin.dashboard') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
+                <i class="menu-icon tf-icons ti ti-smart-home"></i>
+                <div data-i18n="Dashboard">Dashboard</div>
             </a>
         </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Content Management</span>
+
+        @canany(['settings-list'])
+        <li class="menu-item {{ Route::is('admin.settings*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-settings"></i>
+                <div data-i18n="Administration">Administration</div>
+            </a>
+            <ul class="menu-sub">
+                @can('settings-list')
+                <li class="menu-item {{ Route::is('admin.settings*') ? 'active' : ''}}">
+                    <a href="{{ route('admin.settings.index') }}" class="menu-link">
+                        <div data-i18n="Settings">Settings</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.projects.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.projects.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-folder"></i>
+        @endcanany
+
+        @canany(['projects-list', 'projects-create', 'projects-edit', 'projects-delete'])
+        <li class="menu-item {{ Route::is('admin.projects*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-folder"></i>
                 <div data-i18n="Projects">Projects</div>
             </a>
+            <ul class="menu-sub">
+                @can('projects-list')
+                <li class="menu-item {{ Route::is('admin.projects.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.projects.index') }}" class="menu-link">
+                        <div data-i18n="All Projects">All Projects</div>
+                    </a>
+                </li>
+                @endcan
+                @can('projects-create')
+                <li class="menu-item {{ Route::is('admin.projects.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.projects.create') }}" class="menu-link">
+                        <div data-i18n="Add Project">Add Project</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.experiences.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.experiences.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-briefcase-alt"></i>
+        @endcanany
+
+        @canany(['experiences-list', 'experiences-create', 'experiences-edit', 'experiences-delete'])
+        <li class="menu-item {{ Route::is('admin.experiences*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-briefcase"></i>
                 <div data-i18n="Experiences">Experiences</div>
             </a>
+            <ul class="menu-sub">
+                @can('experiences-list')
+                <li class="menu-item {{ Route::is('admin.experiences.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.experiences.index') }}" class="menu-link">
+                        <div data-i18n="All Experiences">All Experiences</div>
+                    </a>
+                </li>
+                @endcan
+                @can('experiences-create')
+                <li class="menu-item {{ Route::is('admin.experiences.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.experiences.create') }}" class="menu-link">
+                        <div data-i18n="Add Experience">Add Experience</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.education.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.education.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-graduation"></i>
+        @endcanany
+
+        @canany(['education-list', 'education-create', 'education-edit', 'education-delete'])
+        <li class="menu-item {{ Route::is('admin.education*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-school"></i>
                 <div data-i18n="Education">Education</div>
             </a>
+            <ul class="menu-sub">
+                @can('education-list')
+                <li class="menu-item {{ Route::is('admin.education.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.education.index') }}" class="menu-link">
+                        <div data-i18n="All Education">All Education</div>
+                    </a>
+                </li>
+                @endcan
+                @can('education-create')
+                <li class="menu-item {{ Route::is('admin.education.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.education.create') }}" class="menu-link">
+                        <div data-i18n="Add Education">Add Education</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.skills.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.skills.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-award"></i>
+        @endcanany
+
+        @canany(['skills-list', 'skills-create', 'skills-edit', 'skills-delete'])
+        <li class="menu-item {{ Route::is('admin.skills*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-cpu"></i>
                 <div data-i18n="Skills">Skills</div>
             </a>
+            <ul class="menu-sub">
+                @can('skills-list')
+                <li class="menu-item {{ Route::is('admin.skills.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.skills.index') }}" class="menu-link">
+                        <div data-i18n="All Skills">All Skills</div>
+                    </a>
+                </li>
+                @endcan
+                @can('skills-create')
+                <li class="menu-item {{ Route::is('admin.skills.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.skills.create') }}" class="menu-link">
+                        <div data-i18n="Add Skill">Add Skill</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.services.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.services.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-wrench"></i>
+        @endcanany
+
+        @canany(['services-list', 'services-create', 'services-edit', 'services-delete'])
+        <li class="menu-item {{ Route::is('admin.services*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-tool"></i>
                 <div data-i18n="Services">Services</div>
             </a>
+            <ul class="menu-sub">
+                @can('services-list')
+                <li class="menu-item {{ Route::is('admin.services.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.services.index') }}" class="menu-link">
+                        <div data-i18n="All Services">All Services</div>
+                    </a>
+                </li>
+                @endcan
+                @can('services-create')
+                <li class="menu-item {{ Route::is('admin.services.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.services.create') }}" class="menu-link">
+                        <div data-i18n="Add Service">Add Service</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.testimonials.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.testimonials.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-message-square-detail"></i>
+        @endcanany
+
+        @canany(['testimonials-list', 'testimonials-create', 'testimonials-edit', 'testimonials-delete'])
+        <li class="menu-item {{ Route::is('admin.testimonials*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-message-star"></i>
                 <div data-i18n="Testimonials">Testimonials</div>
             </a>
+            <ul class="menu-sub">
+                @can('testimonials-list')
+                <li class="menu-item {{ Route::is('admin.testimonials.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.testimonials.index') }}" class="menu-link">
+                        <div data-i18n="All Testimonials">All Testimonials</div>
+                    </a>
+                </li>
+                @endcan
+                @can('testimonials-create')
+                <li class="menu-item {{ Route::is('admin.testimonials.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.testimonials.create') }}" class="menu-link">
+                        <div data-i18n="Add Testimonial">Add Testimonial</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Communication</span>
-        </li>
-        <li class="menu-item {{ request()->routeIs('admin.messages.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.messages.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-envelope"></i>
-                <div data-i18n="Messages">Messages
-                    @if (\App\Models\ContactMessage::unread()->count() > 0)
-                        <span class="badge bg-label-primary rounded-pill ms-auto">{{ \App\Models\ContactMessage::unread()->count() }}</span>
-                    @endif
-                </div>
+        @endcanany
+
+        @canany(['messages-list'])
+        <li class="menu-item {{ Route::is('admin.messages*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-mail"></i>
+                <div data-i18n="Messages">Messages</div>
             </a>
+            <ul class="menu-sub">
+                @can('messages-list')
+                <li class="menu-item {{ Route::is('admin.messages.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.messages.index') }}" class="menu-link">
+                        <div data-i18n="All Messages">All Messages</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Administration</span>
-        </li>
-        <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active open' : '' }}">
-            <a href="{{ route('admin.users.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
+        @endcanany
+
+        @canany(['users-list', 'users-create', 'users-edit', 'users-delete'])
+        <li class="menu-item {{ Route::is('admin.users*') ? 'active open' : ''}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
                 <div data-i18n="Users">Users</div>
             </a>
+            <ul class="menu-sub">
+                @can('users-list')
+                <li class="menu-item {{ Route::is('admin.users.index') ? 'active' : ''}}">
+                    <a href="{{ route('admin.users.index') }}" class="menu-link">
+                        <div data-i18n="All Users">All Users</div>
+                    </a>
+                </li>
+                @endcan
+                @can('users-create')
+                <li class="menu-item {{ Route::is('admin.users.create') ? 'active' : ''}}">
+                    <a href="{{ route('admin.users.create') }}" class="menu-link">
+                        <div data-i18n="Add User">Add User</div>
+                    </a>
+                </li>
+                @endcan
+            </ul>
         </li>
+        @endcanany
     </ul>
 </aside>
-<div class="layout-menu-toggle navbar-fixed d-xl-none"><i class="bx bx-chevron-left"></i></div>

@@ -19,10 +19,18 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
-            'remember' => ['boolean'],
         ]);
 
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+        $remember = $request->boolean('remember');
+
+        if (!Auth::attempt($credentials, $remember)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid email or password.',
+                ], 422);
+            }
+
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
@@ -30,7 +38,16 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/admin/dashboard');
+        $redirectUrl = '/admin/dashboard';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'route' => $redirectUrl,
+            ]);
+        }
+
+        return redirect()->intended($redirectUrl);
     }
 
     public function logout(Request $request)
@@ -39,6 +56,13 @@ class LoginController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'route' => '/login',
+            ]);
+        }
 
         return redirect('/');
     }

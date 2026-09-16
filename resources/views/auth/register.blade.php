@@ -1,50 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <div>
-            <h2 class="text-center text-3xl font-extrabold text-gray-900">Create Admin Account</h2>
-            <p class="mt-2 text-center text-sm text-gray-600">Already have an account? <a href="{{ route('login') }}" class="font-medium text-blue-600 hover:text-blue-500">Sign in</a></p>
+@extends('auth.master')
+@push('title', 'Register')
+
+@section('content')
+    <!-- Content -->
+    <div class="authentication-wrapper authentication-cover authentication-bg">
+        <div class="authentication-inner row">
+            <!-- /Left Text -->
+            <div class="d-none d-lg-flex col-lg-7 p-0">
+                <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
+                    <img
+                    src="{{ asset('admin/assets/img/illustrations/auth-register-illustration-light.png') }}"
+                    alt="auth-register-cover"
+                    class="img-fluid my-5 auth-illustration"
+                    data-app-light-img="illustrations/auth-register-illustration-light.png"
+                    data-app-dark-img="illustrations/auth-register-illustration-dark.png"
+                    />
+                </div>
+            </div>
+            <!-- /Left Text -->
+
+            <!-- Register -->
+            <div class="d-flex col-12 col-lg-5 align-items-center p-sm-5 p-4">
+                <div class="w-px-500 mx-auto">
+                    <!-- Logo -->
+                    <div class="app-brand mb-4">
+                        <a href="{{ route('login') }}" class="app-brand-link gap-2">
+                            <span class="app-brand">
+                                @if(isset(setting()->logo) && !empty(setting()->logo))
+                                    <img width="250" src="{{ asset('admin/assets/settings') }}/{{ setting()->logo }}" class="img-fluid light-logo" alt="Logo" />
+                                @else
+                                    <img width="250" src="{{ asset('admin/assets/logo/vertical-b-logo.png') }}" class="img-fluid " alt="Logo" />
+                                @endif
+                            </span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <h3 class="mb-1 fw-bold">Create Account on {{ setting()->name ?? 'Admin Panel' }} 👋</h3>
+                    <p class="mb-4">Fill in the details to create your account</p>
+
+                    @if ($errors->any())
+                        <div id="errorMessage" class="alert alert-danger">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+
+                    <form id="registerForm" class="mb-3" action="{{ route('register') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required autofocus />
+                            <span class="text-danger">{{ $errors->first('name') }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
+                            <span class="text-danger">{{ $errors->first('email') }}</span>
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group input-group-merge">
+                                <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
+                                <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                <span class="text-danger">{{ $errors->first('password') }}</span>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <label for="password_confirmation" class="form-label">Confirm Password</label>
+                            <div class="input-group input-group-merge">
+                                <input type="password" id="password_confirmation" class="form-control" name="password_confirmation" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password_confirmation" required />
+                                <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="submit" class="btn btn-primary d-grid w-100">Register</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-4">
+                        Already have an account?
+                        <a href="{{ route('login') }}" class="fw-medium text-primary"> Sign in</a>
+                    </p>
+                </div>
+            </div>
+            <!-- /Register -->
         </div>
-        <form class="mt-8 space-y-6" method="POST" action="{{ route('register') }}">
-            @csrf
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="name" class="sr-only">Name</label>
-                    <input id="name" name="name" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Name">
-                </div>
-                <div>
-                    <label for="email" class="sr-only">Email address</label>
-                    <input id="email" name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Email address">
-                </div>
-                <div>
-                    <label for="password" class="sr-only">Password</label>
-                    <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Password">
-                </div>
-                <div>
-                    <label for="password_confirmation" class="sr-only">Confirm Password</label>
-                    <input id="password_confirmation" name="password_confirmation" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Confirm Password">
-                </div>
-            </div>
-
-            @if ($errors->any())
-                <div class="text-red-600 text-sm">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Register
-                </button>
-            </div>
-        </form>
     </div>
-</body>
-</html>
+    <!-- Content -->
+@endsection
+
+@push('js')
+    <script>
+        $(document).on('click','i[class^="ti ti-eye"]',function(){
+            var getType=$(this).parent().parent().find('input').attr('type');
+            if(getType!='text'){
+                $(this).attr('class','ti ti-eye-off');
+                $(this).parent().parent().find('input').attr('type','password');
+            }else{
+                $(this).attr('class','ti ti-eye');
+                $(this).parent().parent().find('input').attr('type','text');
+            }
+        });
+    </script>
+@endpush
