@@ -98,21 +98,21 @@
         </li>
         @endcanany
 
-        @canany(['education-list', 'education-create', 'education-edit', 'education-delete'])
+        @canany(['educations-list', 'educations-create', 'educations-edit', 'educations-delete'])
         <li class="menu-item {{ Route::is('admin.education*') ? 'active open' : ''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-school"></i>
                 <div data-i18n="Education">Education</div>
             </a>
             <ul class="menu-sub">
-                @can('education-list')
+                @can('educations-list')
                 <li class="menu-item {{ Route::is('admin.education.index') ? 'active' : ''}}">
                     <a href="{{ route('admin.education.index') }}" class="menu-link">
                         <div data-i18n="All Education">All Education</div>
                     </a>
                 </li>
                 @endcan
-                @can('education-create')
+                @can('educations-create')
                 <li class="menu-item {{ Route::is('admin.education.create') ? 'active' : ''}}">
                     <a href="{{ route('admin.education.create') }}" class="menu-link">
                         <div data-i18n="Add Education">Add Education</div>
@@ -198,14 +198,14 @@
         </li>
         @endcanany
 
-        @canany(['messages-list'])
+        @canany(['contact_messages-list', 'contact_messages-show', 'contact_messages-delete'])
         <li class="menu-item {{ Route::is('admin.messages*') ? 'active open' : ''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-mail"></i>
                 <div data-i18n="Messages">Messages</div>
             </a>
             <ul class="menu-sub">
-                @can('messages-list')
+                @can('contact_messages-list')
                 <li class="menu-item {{ Route::is('admin.messages.index') ? 'active' : ''}}">
                     <a href="{{ route('admin.messages.index') }}" class="menu-link">
                         <div data-i18n="All Messages">All Messages</div>

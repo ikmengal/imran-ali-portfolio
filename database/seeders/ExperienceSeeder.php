@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Experience;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class ExperienceSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class ExperienceSeeder extends Seeder
             $query->where('name', 'Super Admin');
         })->first() ?? User::first();
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 

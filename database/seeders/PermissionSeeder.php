@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Spatie\Permission\PermissionRegistrar;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Seeder;
-
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
@@ -18,6 +16,12 @@ class PermissionSeeder extends Seeder
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permissions = [
+            // Settings
+            [
+                'label' => 'settings',
+                'name' => 'settings-list',
+            ],
+
             // Permissions
             [
                 'label' => 'permissions',

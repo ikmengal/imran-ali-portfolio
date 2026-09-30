@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Testimonial;
+use App\Models\User;
+
+class TestimonialPolicy
+{
+    public function viewAny(User $user): bool
+    {
+        return $user->can('testimonials-list');
+    }
+
+    public function view(User $user, Testimonial $testimonial): bool
+    {
+        return $user->can('testimonials-show') && $this->checkOwnership($user, $testimonial);
+    }
+
+    public function create(User $user): bool
+    {
+        return $user->can('testimonials-create');
+    }
+
+    public function update(User $user, Testimonial $testimonial): bool
+    {
+        return $user->can('testimonials-edit') && $this->checkOwnership($user, $testimonial);
+    }
+
+    public function delete(User $user, Testimonial $testimonial): bool
+    {
+        return $user->can('testimonials-delete') && $this->checkOwnership($user, $testimonial);
+    }
+
+    public function toggleStatus(User $user, Testimonial $testimonial): bool
+    {
+        return $user->can('testimonials-edit') && $this->checkOwnership($user, $testimonial);
+    }
+
+    protected function checkOwnership(User $user, Testimonial $testimonial): bool
+    {
+        if ($user->hasRole('Super Admin')) {
+            return true;
+        }
+
+        return $testimonial->user_id === $user->id;
+    }
+}

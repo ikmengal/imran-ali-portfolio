@@ -13,30 +13,28 @@
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="projectsTable" class="table table-striped table-hover dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Project</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Technologies</th>
-                        <th>Order</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+<x-admin.card title="Projects" subtitle="Manage all portfolio projects with technologies">
+    <div class="table-responsive">
+        <table id="projectsTable" class="table table-striped table-hover dt-responsive nowrap w-100">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Project</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Technologies</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-</div>
+</x-admin.card>
 @endsection
 
-@push('scripts')
+@push('js')
 <script>
     $(document).ready(function() {
         $('#projectsTable').DataTable({
@@ -60,7 +58,6 @@
                 processing: '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>'
             },
             drawCallback: function() {
-                // Re-initialize tooltips after draw
                 $('[data-bs-toggle="tooltip"]').tooltip();
             }
         });

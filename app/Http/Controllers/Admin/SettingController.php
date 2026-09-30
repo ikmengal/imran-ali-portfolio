@@ -12,6 +12,7 @@ class SettingController extends Controller
     public function index()
     {
         $setting = Setting::firstOrCreate([]);
+
         return view('admin.settings.index', compact('setting'));
     }
 
@@ -35,30 +36,30 @@ class SettingController extends Controller
 
         if ($request->hasFile('logo')) {
             if ($setting->logo) {
-                Storage::disk('public')->delete('admin/assets/settings/' . $setting->logo);
+                Storage::disk('public')->delete('admin/assets/settings/'.$setting->logo);
             }
             $file = $request->file('logo');
-            $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'logo_'.time().'.'.$file->getClientOriginalExtension();
             $file->storeAs('admin/assets/settings', $filename, 'public');
             $validated['logo'] = $filename;
         }
 
         if ($request->hasFile('white_logo')) {
             if ($setting->white_logo) {
-                Storage::disk('public')->delete('admin/assets/settings/' . $setting->white_logo);
+                Storage::disk('public')->delete('admin/assets/settings/'.$setting->white_logo);
             }
             $file = $request->file('white_logo');
-            $filename = 'white_logo_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'white_logo_'.time().'.'.$file->getClientOriginalExtension();
             $file->storeAs('admin/assets/settings', $filename, 'public');
             $validated['white_logo'] = $filename;
         }
 
         if ($request->hasFile('favicon')) {
             if ($setting->favicon) {
-                Storage::disk('public')->delete('admin/assets/settings/' . $setting->favicon);
+                Storage::disk('public')->delete('admin/assets/settings/'.$setting->favicon);
             }
             $file = $request->file('favicon');
-            $filename = 'favicon_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'favicon_'.time().'.'.$file->getClientOriginalExtension();
             $file->storeAs('admin/assets/settings', $filename, 'public');
             $validated['favicon'] = $filename;
         }

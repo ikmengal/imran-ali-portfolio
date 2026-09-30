@@ -153,6 +153,7 @@
     <script src="{{ asset('admin/assets/js/charts-chartjs.js') }}"></script>
     <script src="{{ asset('admin/assets/js/cards-statistics.js') }}"></script>
     @stack('js')
+    @stack('modals')
     <script>
         function showFancyBox() {
             $.fancybox.open('<div class="fancybox-loading"></div>', {

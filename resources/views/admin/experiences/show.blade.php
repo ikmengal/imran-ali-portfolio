@@ -4,84 +4,83 @@
 
 @section('content')
 <div class="max-2xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $experience->job_title }}</h2>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">{{ $experience->company }}</p>
+            <h2 class="mb-1">{{ $experience->job_title }}</h2>
+            <p class="text-muted mb-0">{{ $experience->company }}</p>
         </div>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('admin.experiences.edit', $experience) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
-                <i class="ph ph-pencil text-sm"></i>
-                Edit
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.experiences.edit', $experience) }}" class="btn btn-primary">
+                <i class="bx bx-edit me-1"></i> Edit
             </a>
-            <a href="{{ route('admin.experiences.index') }}" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                <i class="ph ph-arrow-left text-sm"></i>
-                Back
+            <a href="{{ route('admin.experiences.index') }}" class="btn btn-secondary">
+                <i class="bx bx-arrow-back me-1"></i> Back
             </a>
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-3">
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Description</h3>
-                <div class="prose dark:prose-invert max-w-none">
-                    {!! $experience->description ?? '<p class="text-slate-500 dark:text-slate-400">No description provided.</p>' !!}
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-md-6">
+            <x-admin.card title="Experience Details">
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <th scope="row" style="width: 150px;">Company</th>
+                            <td>{{ $experience->company }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Employment Type</th>
+                            <td>{{ $experience->employment_type ?? '—' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Location</th>
+                            <td>{{ $experience->location ?? '—' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Duration</th>
+                            <td>
+                                {{ $experience->start_date?->format('M Y') }} - 
+                                {{ $experience->is_current ? 'Present' : ($experience->end_date?->format('M Y') ?? '—') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Current Position</th>
+                            <td>{{ $experience->is_current ? 'Yes' : 'No' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Sort Order</th>
+                            <td>{{ $experience->sort_order ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Status</th>
+                            <td>
+                                @if ($experience->is_visible)
+                                    <span class="badge bg-label-success">Visible</span>
+                                @else
+                                    <span class="badge bg-label-secondary">Hidden</span>
+                                @endif
+                                @if ($experience->is_current)
+                                    <span class="badge bg-label-primary ms-1">Current</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Created By</th>
+                            <td>{{ $experience->user->name ?? 'Unknown' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Created At</th>
+                            <td>{{ $experience->created_at->format('M d, Y H:i') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </x-admin.card>
         </div>
 
-        <div class="space-y-6">
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Details</h3>
-                <dl class="space-y-3">
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Employment Type</dt>
-                        <dd class="font-medium">{{ $experience->employment_type ?? '—' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Location</dt>
-                        <dd class="font-medium">{{ $experience->location ?? '—' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Period</dt>
-                        <dd class="font-medium">
-                            {{ $experience->start_date->format('M Y') }} -
-                            @if ($experience->is_current)
-                                <span class="text-primary-600 dark:text-primary-400">Present</span>
-                            @else
-                                {{ $experience->end_date->format('M Y') }}
-                            @endif
-                        </dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Current Position</dt>
-                        <dd class="font-medium">{{ $experience->is_current ? 'Yes' : 'No' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Visibility</dt>
-                        <dd class="font-medium">{{ $experience->is_visible ? 'Visible' : 'Hidden' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Sort Order</dt>
-                        <dd class="font-medium">{{ $experience->sort_order ?? 0 }}</dd>
-                    </div>
-                </dl>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Timestamps</h3>
-                <dl class="space-y-3 text-sm">
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Created</dt>
-                        <dd class="font-medium">{{ $experience->created_at->format('M d, Y H:i') }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Updated</dt>
-                        <dd class="font-medium">{{ $experience->updated_at->format('M d, Y H:i') }}</dd>
-                    </div>
-                </dl>
-            </div>
+        <div class="col-md-6">
+            <x-admin.card title="Description">
+                <p>{{ $experience->description ?? 'No description provided.' }}</p>
+            </x-admin.card>
         </div>
     </div>
 </div>

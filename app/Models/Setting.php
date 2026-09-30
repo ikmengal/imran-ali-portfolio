@@ -36,24 +36,27 @@ class Setting extends Model
     public function getLogoUrl(): string
     {
         if ($this->logo) {
-            return asset('admin/assets/settings/' . $this->logo);
+            return asset('admin/assets/settings/'.$this->logo);
         }
+
         return asset('admin/assets/logo/vertical-w-logo.png');
     }
 
     public function getWhiteLogoUrl(): string
     {
         if ($this->white_logo) {
-            return asset('admin/assets/settings/' . $this->white_logo);
+            return asset('admin/assets/settings/'.$this->white_logo);
         }
+
         return asset('admin/assets/logo/vertical-b-logo.png');
     }
 
     public function getFaviconUrl(): string
     {
         if ($this->favicon) {
-            return asset('admin/assets/settings/' . $this->favicon);
+            return asset('admin/assets/settings/'.$this->favicon);
         }
+
         return asset('admin/assets/logo/favicon.png');
     }
 }

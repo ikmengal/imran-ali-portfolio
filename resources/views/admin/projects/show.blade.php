@@ -4,108 +4,111 @@
 
 @section('content')
 <div class="max-4xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $project->title }}</h2>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Project details</p>
+            <h2 class="mb-1">{{ $project->title }}</h2>
+            <p class="text-muted mb-0">Project Details</p>
         </div>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('admin.projects.edit', $project) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
-                <i class="ph ph-pencil text-sm"></i>
-                Edit
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-primary">
+                <i class="bx bx-edit me-1"></i> Edit
             </a>
-            <a href="{{ route('admin.projects.index') }}" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                <i class="ph ph-arrow-left text-sm"></i>
-                Back
+            <a href="{{ route('admin.projects.index') }}" class="btn btn-secondary">
+                <i class="bx bx-arrow-back me-1"></i> Back
             </a>
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-3">
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Description</h3>
-                <div class="prose dark:prose-invert max-w-none">
-                    {!! $project->description ?? '<p class="text-slate-500 dark:text-slate-400">No description provided.</p>' !!}
+    <div class="row">
+        <div class="col-md-4">
+            <x-admin.card title="Project Image">
+                <div class="text-center">
+                    @if ($project->image)
+                        <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="img-fluid rounded">
+                    @else
+                        <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <i class="bx bx-image text-secondary" style="font-size: 4rem;"></i>
+                        </div>
+                    @endif
                 </div>
-            </div>
+            </x-admin.card>
 
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Technologies</h3>
-                @if ($project->technologies->isEmpty())
-                    <p class="text-slate-500 dark:text-slate-400">No technologies added.</p>
-                @else
-                    <div class="flex flex-wrap gap-2">
-                        @foreach ($project->technologies as $tech)
-                            <span class="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full">{{ $tech->name }}</span>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <div class="space-y-6">
-            @if ($project->image)
-                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Image</h3>
-                    <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="w-full rounded-lg border border-slate-200 dark:border-slate-700">
-                </div>
-            @endif
-
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Links</h3>
-                <div class="space-y-3">
+            <x-admin.card title="Links" class="mt-3">
+                <div class="d-flex flex-column gap-2">
                     @if ($project->github_url)
-                        <a href="{{ $project->github_url }}" target="_blank" class="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline">
-                            <i class="ph ph-github-logo text-lg"></i> GitHub
+                        <a href="{{ $project->github_url }}" target="_blank" class="btn btn-outline-dark">
+                            <i class="bx bxl-github me-2"></i> View on GitHub
                         </a>
                     @endif
                     @if ($project->live_url)
-                        <a href="{{ $project->live_url }}" target="_blank" class="flex items-center gap-2 text-green-600 dark:text-green-400 hover:underline">
-                            <i class="ph ph-globe text-lg"></i> Live Demo
+                        <a href="{{ $project->live_url }}" target="_blank" class="btn btn-outline-primary">
+                            <i class="bx bx-link-external me-2"></i> Live Demo
                         </a>
                     @endif
-                    @if (!$project->github_url && !$project->live_url)
-                        <p class="text-slate-500 dark:text-slate-400">No links provided.</p>
-                    @endif
                 </div>
-            </div>
+            </x-admin.card>
+        </div>
 
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Status</h3>
-                <dl class="space-y-3">
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Visibility</dt>
-                        <dd class="font-medium">{{ $project->is_visible ? 'Visible' : 'Hidden' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Featured</dt>
-                        <dd class="font-medium">{{ $project->is_featured ? 'Yes' : 'No' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Category</dt>
-                        <dd class="font-medium">{{ $project->category ?? '—' }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Sort Order</dt>
-                        <dd class="font-medium">{{ $project->sort_order ?? 0 }}</dd>
-                    </div>
-                </dl>
-            </div>
+        <div class="col-md-8">
+            <x-admin.card title="Description">
+                <div class="prose">{{ $project->description }}</div>
+            </x-admin.card>
 
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Timestamps</h3>
-                <dl class="space-y-3 text-sm">
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Created</dt>
-                        <dd class="font-medium">{{ $project->created_at->format('M d, Y H:i') }}</dd>
+            <x-admin.card title="Short Description" class="mt-3">
+                <p>{{ $project->short_description ?? '—' }}</p>
+            </x-admin.card>
+
+            <x-admin.card title="Technologies" class="mt-3">
+                @if ($project->technologies->isEmpty())
+                    <p class="text-muted">No technologies added</p>
+                @else
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach ($project->technologies as $tech)
+                            <span class="badge bg-primary">{{ $tech->name }}</span>
+                        @endforeach
                     </div>
-                    <div class="flex justify-between">
-                        <dt class="text-slate-500 dark:text-slate-400">Updated</dt>
-                        <dd class="font-medium">{{ $project->updated_at->format('M d, Y H:i') }}</dd>
-                    </div>
-                </dl>
-            </div>
+                @endif
+            </x-admin.card>
+
+            <x-admin.card title="Metadata" class="mt-3">
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <th scope="row" style="width: 150px;">Category</th>
+                            <td>{{ $project->category ?? '—' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Sort Order</th>
+                            <td>{{ $project->sort_order ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Status</th>
+                            <td>
+                                @if ($project->is_visible)
+                                    <span class="badge bg-label-success">Visible</span>
+                                @else
+                                    <span class="badge bg-label-secondary">Hidden</span>
+                                @endif
+                                @if ($project->is_featured)
+                                    <span class="badge bg-label-warning ms-1">Featured</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Created By</th>
+                            <td>{{ $project->user->name ?? 'Unknown' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Created At</th>
+                            <td>{{ $project->created_at->format('M d, Y H:i') }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Updated At</th>
+                            <td>{{ $project->updated_at->format('M d, Y H:i') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </x-admin.card>
         </div>
     </div>
 </div>

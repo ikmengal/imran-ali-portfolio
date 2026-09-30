@@ -1,23 +1,26 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\ExperienceController;
-use App\Http\Controllers\Admin\EducationController;
-use App\Http\Controllers\Admin\SkillController;
-use App\Http\Controllers\Admin\ServiceController;
-use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\ContactMessageController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\PortfolioController;
+use App\Models\ContactMessage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PortfolioController::class, 'index'])->name('portfolio');
 
 require __DIR__.'/auth.php';
 
-Route::post('/contact', function (\Illuminate\Http\Request $request) {
+Route::post('/contact', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
@@ -25,28 +28,47 @@ Route::post('/contact', function (\Illuminate\Http\Request $request) {
         'message' => 'required|string',
     ]);
 
-    \App\Models\ContactMessage::create($validated);
+    ContactMessage::create($validated);
 
     return response()->json([
-        'message' => 'Thank you for your message! I\'ll get back to you soon.'
+        'message' => 'Thank you for your message! I\'ll get back to you soon.',
     ]);
 })->name('contact.store');
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
 
     Route::resource('projects', ProjectController::class);
+    Route::post('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])->name('projects.toggle-status');
+
     Route::resource('experiences', ExperienceController::class);
+    Route::post('experiences/{experience}/toggle-status', [ExperienceController::class, 'toggleStatus'])->name('experiences.toggle-status');
+
     Route::resource('education', EducationController::class)->parameters(['education' => 'education']);
+    Route::post('education/{education}/toggle-status', [EducationController::class, 'toggleStatus'])->name('education.toggle-status');
+
     Route::resource('skills', SkillController::class);
+    Route::post('skills/{skill}/toggle-status', [SkillController::class, 'toggleStatus'])->name('skills.toggle-status');
+
     Route::resource('services', ServiceController::class);
+    Route::post('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
+
     Route::resource('testimonials', TestimonialController::class);
+    Route::post('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
+
     Route::resource('messages', ContactMessageController::class)->only(['index', 'show', 'destroy']);
-    Route::patch('messages/{message}/read', [ContactMessageController::class, 'markAsRead'])->name('messages.read');
-    Route::patch('messages/{message}/unread', [ContactMessageController::class, 'markAsUnread'])->name('messages.unread');
+    Route::post('messages/{message}/read', [ContactMessageController::class, 'markAsRead'])->name('messages.read');
+    Route::post('messages/{message}/unread', [ContactMessageController::class, 'markAsUnread'])->name('messages.unread');
+    Route::post('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
+
     Route::resource('users', UserController::class);
+    Route::get('users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
+    Route::post('users/generate-password', [UserController::class, 'generatePassword'])->name('users.generate-password');
+    Route::patch('users/{user}/restore', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
+    Route::delete('users/{user}/force-delete', [UserController::class, 'forceDelete'])->withTrashed()->name('users.force-delete');
+    Route::patch('users/{user}/password', [UserController::class, 'changePassword'])->name('users.password');
 });

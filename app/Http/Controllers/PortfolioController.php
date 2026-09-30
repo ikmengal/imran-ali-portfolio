@@ -9,7 +9,6 @@ use App\Models\Service;
 use App\Models\Skill;
 use App\Models\Testimonial;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class PortfolioController extends Controller
 {
@@ -19,7 +18,7 @@ class PortfolioController extends Controller
             $query->where('name', 'Super Admin');
         })->first();
 
-        if (!$user) {
+        if (! $user) {
             $user = User::first();
         }
 

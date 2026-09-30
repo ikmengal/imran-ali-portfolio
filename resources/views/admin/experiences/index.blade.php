@@ -13,27 +13,24 @@
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="experiencesTable" class="table table-striped table-hover dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th>Role & Company</th>
-                        <th>Type</th>
-                        <th>Location</th>
-                        <th>Duration</th>
-                        <th>Status</th>
-                        <th>Order</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+<x-admin.card title="Experiences" subtitle="Manage all work experiences">
+    <div class="table-responsive">
+        <table id="experiencesTable" class="table table-striped table-hover dt-responsive nowrap w-100">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-</div>
+</x-admin.card>
 @endsection
 
 @push('scripts')
@@ -44,15 +41,14 @@
             serverSide: true,
             ajax: '{{ route('admin.experiences.index') }}',
             columns: [
-                { data: 'title', name: 'title' },
-                { data: 'type', name: 'type' },
-                { data: 'location', name: 'location' },
-                { data: 'duration', name: 'duration' },
+                { data: 'job_title', name: 'job_title' },
+                { data: 'type', name: 'employment_type', orderable: false, searchable: false },
+                { data: 'duration', name: 'start_date', orderable: false, searchable: false },
                 { data: 'status', name: 'status' },
                 { data: 'sort_order', name: 'sort_order' },
                 { data: 'actions', name: 'actions', orderable: false, searchable: false }
             ],
-            order: [[5, 'asc']],
+            order: [[4, 'asc']],
             pageLength: 10,
             lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             responsive: true,

@@ -4,87 +4,113 @@
 
 @section('content')
 <div class="max-2xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Create Experience</h2>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Add a new work experience</p>
+            <h2 class="mb-1">Create Experience</h2>
+            <p class="text-muted mb-0">Add a new work experience</p>
         </div>
-        <a href="{{ route('admin.experiences.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
-            <i class="ph ph-arrow-left text-sm"></i>
-            Back
+        <a href="{{ route('admin.experiences.index') }}" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back
         </a>
     </div>
 
-    <form method="POST" action="{{ route('admin.experiences.store') }}" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 space-y-6">
+    <form method="POST" action="{{ route('admin.experiences.store') }}" class="card" id="create-form">
         @csrf
 
-        <div>
-            <label for="job_title" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Job Title <span class="text-red-500">*</span></label>
-            <input type="text" id="job_title" name="job_title" value="{{ old('job_title') }}" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            @error('job_title')
-                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
+        <div class="card-body">
+            <x-admin.input
+                label="Job Title"
+                name="job_title"
+                required
+                placeholder="e.g., Senior Full Stack Developer"
+                error="{{ $errors->first('job_title') }}"
+            />
 
-        <div>
-            <label for="company" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Company <span class="text-red-500">*</span></label>
-            <input type="text" id="company" name="company" value="{{ old('company') }}" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            @error('company')
-                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
+            <x-admin.input
+                label="Company"
+                name="company"
+                required
+                placeholder="Company name"
+                error="{{ $errors->first('company') }}"
+            />
 
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label for="employment_type" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Employment Type</label>
-                <input type="text" id="employment_type" name="employment_type" value="{{ old('employment_type') }}" placeholder="Full-time, Part-time, Contract, etc." class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <x-admin.input
+                        label="Employment Type"
+                        name="employment_type"
+                        placeholder="Full-time, Part-time, Contract, Freelance, Internship"
+                        error="{{ $errors->first('employment_type') }}"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <x-admin.input
+                        label="Location"
+                        name="location"
+                        placeholder="City, Country or Remote"
+                        error="{{ $errors->first('location') }}"
+                    />
+                </div>
             </div>
-            <div>
-                <label for="location" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Location</label>
-                <input type="text" id="location" name="location" value="{{ old('location') }}" placeholder="City, Country or Remote" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <x-admin.date
+                        label="Start Date"
+                        name="start_date"
+                        required
+                        error="{{ $errors->first('start_date') }}"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <x-admin.date
+                        label="End Date"
+                        name="end_date"
+                        error="{{ $errors->first('end_date') }}"
+                    />
+                </div>
             </div>
-        </div>
 
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label for="start_date" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Start Date <span class="text-red-500">*</span></label>
-                <input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <x-admin.checkbox
+                        label="Currently Working Here"
+                        name="is_current"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <x-admin.number
+                        label="Sort Order"
+                        name="sort_order"
+                        value="0"
+                        min="0"
+                        error="{{ $errors->first('sort_order') }}"
+                    />
+                </div>
             </div>
-            <div>
-                <label for="end_date" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">End Date</label>
-                <input type="date" id="end_date" name="end_date" value="{{ old('end_date') }}" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+
+            <x-admin.checkbox
+                label="Visible on Portfolio"
+                name="is_visible"
+                checked="true"
+            />
+
+            <x-admin.textarea
+                label="Description"
+                name="description"
+                placeholder="Describe your responsibilities, achievements, technologies used"
+                rows="5"
+                error="{{ $errors->first('description') }}"
+            />
+        </div>
+
+        <div class="card-footer">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ route('admin.experiences.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bx bx-save me-1"></i> Save Experience
+                </button>
             </div>
-        </div>
-
-        <div>
-            <label for="description" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
-            <textarea id="description" name="description" rows="4" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">{{ old('description') }}</textarea>
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label for="sort_order" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Sort Order</label>
-                <input type="number" id="sort_order" name="sort_order" value="{{ old('sort_order', 0) }}" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="is_current" value="1" {{ old('is_current') ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500">
-                <span class="text-sm text-slate-700 dark:text-slate-300">Current Position</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', true) ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500">
-                <span class="text-sm text-slate-700 dark:text-slate-300">Visible on Portfolio</span>
-            </label>
-        </div>
-
-        <div class="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <a href="{{ route('admin.experiences.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</a>
-            <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                <i class="ph ph-floppy-disk text-sm"></i>
-                Save Experience
-            </button>
         </div>
     </form>
 </div>

@@ -13,26 +13,24 @@
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="skillsTable" class="table table-striped table-hover dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th>Skill</th>
-                        <th>Category</th>
-                        <th>Proficiency</th>
-                        <th>Status</th>
-                        <th>Order</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+<x-admin.card title="Skills" subtitle="Manage all skills with proficiency levels">
+    <div class="table-responsive">
+        <table id="skillsTable" class="table table-striped table-hover dt-responsive nowrap w-100">
+            <thead>
+                <tr>
+                    <th>Skill</th>
+                    <th>Category</th>
+                    <th>Proficiency</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-</div>
+</x-admin.card>
 @endsection
 
 @push('scripts')

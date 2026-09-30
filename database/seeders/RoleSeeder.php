@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Database\Seeder;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleSeeder extends Seeder
 {
@@ -106,6 +105,40 @@ class RoleSeeder extends Seeder
         $admin->syncPermissions(
             Permission::where('guard_name', 'web')
                 ->whereIn('name', $adminPermissions)
+                ->get()
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | User
+        |--------------------------------------------------------------------------
+        */
+
+        $user = Role::updateOrCreate(
+            [
+                'name' => 'User',
+                'guard_name' => 'web',
+            ]
+        );
+
+        $userPermissions = [
+            'educations-list',
+            'educations-show',
+            'experiences-list',
+            'experiences-show',
+            'skills-list',
+            'skills-show',
+            'projects-list',
+            'projects-show',
+            'services-list',
+            'services-show',
+            'testimonials-list',
+            'testimonials-show',
+        ];
+
+        $user->syncPermissions(
+            Permission::where('guard_name', 'web')
+                ->whereIn('name', $userPermissions)
                 ->get()
         );
 

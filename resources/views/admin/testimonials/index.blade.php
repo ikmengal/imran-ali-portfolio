@@ -13,27 +13,25 @@
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="testimonialsTable" class="table table-striped table-hover dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Client</th>
-                        <th>Rating</th>
-                        <th>Message</th>
-                        <th>Status</th>
-                        <th>Order</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+<x-admin.card title="Testimonials" subtitle="Manage all client testimonials">
+    <div class="table-responsive">
+        <table id="testimonialsTable" class="table table-striped table-hover dt-responsive nowrap w-100">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Client</th>
+                    <th>Rating</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-</div>
+</x-admin.card>
 @endsection
 
 @push('scripts')

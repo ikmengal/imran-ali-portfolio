@@ -4,83 +4,114 @@
 
 @section('content')
 <div class="max-2xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Edit User</h2>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">{{ $user->name }}</p>
+            <h2 class="mb-1">Edit User</h2>
+            <p class="text-muted mb-0">{{ $user->name }}</p>
         </div>
-        <a href="{{ route('admin.users.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
-            <i class="ph ph-arrow-left text-sm"></i>
-            Back
+        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back
         </a>
     </div>
 
-    <form method="POST" action="{{ route('admin.users.update', $user) }}" enctype="multipart/form-data" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 space-y-6">
+    <form method="POST" action="{{ route('admin.users.update', $user) }}" enctype="multipart/form-data" class="card" id="create-form">
         @csrf
         @method('PUT')
 
-        <div>
-            <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name <span class="text-red-500">*</span></label>
-            <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            @error('name')
-                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
+        <div class="card-body">
+            <x-admin.input
+                label="Name"
+                name="name"
+                value="{{ $user->name }}"
+                required
+                placeholder="Full name"
+                error="{{ $errors->first('name') }}"
+            />
 
-        <div>
-            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email <span class="text-red-500">*</span></label>
-            <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            @error('email')
-                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
+            <x-admin.input
+                label="Email"
+                name="email"
+                type="email"
+                value="{{ $user->email }}"
+                required
+                placeholder="user@example.com"
+                error="{{ $errors->first('email') }}"
+            />
 
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password (leave blank to keep current)</label>
-                <input type="password" id="password" name="password" minlength="8" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
-            <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm Password</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
-        </div>
-
-        <div>
-            <label for="profile_image" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Profile Image</label>
-            <input type="file" id="profile_image" name="profile_image" accept="image/*" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-500 file:text-white hover:file:bg-primary-600">
-            @if ($user->profile_image)
-                <div class="mt-2">
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Current image:</p>
-                    <img src="{{ asset('storage/' . $user->profile_image) }}" alt="Current" class="mt-1 w-16 h-16 rounded-full object-cover border border-slate-200 dark:border-slate-700">
+            <div class="row">
+                <div class="col-md-6">
+                    <x-admin.input
+                        label="New Password"
+                        name="password"
+                        type="password"
+                        placeholder="Leave blank to keep current password"
+                        error="{{ $errors->first('password') }}"
+                    />
                 </div>
-            @endif
-        </div>
+                <div class="col-md-6">
+                    <x-admin.input
+                        label="Confirm Password"
+                        name="password_confirmation"
+                        type="password"
+                        placeholder="Confirm new password"
+                    />
+                </div>
+            </div>
 
-        <div>
-            <label for="bio" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bio</label>
-            <textarea id="bio" name="bio" rows="3" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">{{ old('bio', $user->bio) }}</textarea>
-        </div>
+            <x-admin.file
+                label="Profile Image"
+                name="profile_image"
+                accept="image/*"
+                preview="true"
+                previewUrl="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : asset('admin/assets/img/avatars/1.png') }}"
+                error="{{ $errors->first('profile_image') }}"
+                help="Recommended: 400x400px, max 2MB"
+            />
 
-        <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Roles</label>
-            <div class="flex flex-wrap gap-3">
-                @foreach ($roles as $role)
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="roles[]" value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500">
-                        <span class="text-sm text-slate-700 dark:text-slate-300">{{ $role->name }}</span>
-                    </label>
-                @endforeach
+            <x-admin.textarea
+                label="Bio"
+                name="bio"
+                value="{{ $user->bio }}"
+                placeholder="Short biography"
+                rows="3"
+                error="{{ $errors->first('bio') }}"
+            />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <x-admin.select
+                        label="Roles"
+                        name="roles"
+                        :options="$roles"
+                        :value="$userRoles"
+                        multiple="true"
+                        help="Hold Ctrl/Cmd to select multiple roles"
+                        error="{{ $errors->first('roles') }}"
+                    />
+                </div>
             </div>
         </div>
 
-        <div class="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <a href="{{ route('admin.users.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</a>
-            <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                <i class="ph ph-floppy-disk text-sm"></i>
-                Update User
-            </button>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bx bx-save me-1"></i> Update User
+                </button>
+            </div>
         </div>
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('.form-select').each(function() {
+            $(this).select2({
+                dropdownParent: $(this).parent(),
+            });
+        });
+    });
+</script>
+@endpush

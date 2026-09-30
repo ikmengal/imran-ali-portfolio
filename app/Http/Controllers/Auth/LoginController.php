@@ -23,7 +23,7 @@ class LoginController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (!Auth::attempt($credentials, $remember)) {
+        if (! Auth::attempt($credentials, $remember)) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,

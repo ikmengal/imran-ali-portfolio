@@ -11,13 +11,13 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
         $user = Auth::user();
 
-        if (!$user->hasRole('Super Admin')) {
+        if (! $user->hasAnyRole(['Super Admin', 'Admin'])) {
             abort(403, 'Unauthorized. Admin access required.');
         }
 

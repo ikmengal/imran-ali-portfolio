@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,25 +12,25 @@ class ServiceController extends AdminController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $services = Service::ordered();
-            return DataTables::of($services)
+            $query = Service::with('user:id,name')->ordered();
+            $query = $this->scopeRecords($query);
+
+            return DataTables::of($query)
                 ->addColumn('title', function ($service) {
                     $icon = '';
                     if ($service->icon) {
-                        $icon = '<i class="bx ' . e($service->icon) . ' me-2 fs-4"></i>';
+                        $icon = '<i class="bx '.e($service->icon).' me-2 fs-4"></i>';
                     }
+
                     return '<div class="d-flex align-items-center">
-                        ' . $icon . '
+                        '.$icon.'
                         <div>
-                            <h6 class="mb-0">' . e($service->title) . '</h6>
+                            <h6 class="mb-0">'.e($service->title).'</h6>
                         </div>
                     </div>';
                 })
                 ->addColumn('description', function ($service) {
-                    if ($service->description) {
-                        return '<small class="text-muted">' . e(\Illuminate\Support\Str::limit($service->description, 80)) . '</small>';
-                    }
-                    return '<span class="text-muted">—</span>';
+                    return '<div class="text-truncate" style="max-width: 300px;">'.e($service->description).'</div>';
                 })
                 ->addColumn('status', function ($service) {
                     $badges = [];
@@ -42,19 +42,33 @@ class ServiceController extends AdminController
                     if ($service->is_featured) {
                         $badges[] = '<span class="badge bg-label-warning">Featured</span>';
                     }
-                    return '<div class="d-flex flex-wrap">' . implode('', $badges) . '</div>';
+
+                    return '<div class="d-flex flex-wrap">'.implode('', $badges).'</div>';
                 })
                 ->addColumn('sort_order', function ($service) {
                     return $service->sort_order ?? 0;
                 })
                 ->addColumn('actions', function ($service) {
-                    return '<div class="d-flex justify-content-end gap-2">
-                        <a href="' . route('admin.services.edit', $service) . '" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>
-                        <form method="POST" action="' . route('admin.services.destroy', $service) . '" onsubmit="return confirm(\'Are you sure you want to delete this service?\')" class="d-inline">
-                            ' . csrf_field() . method_field('DELETE') . '
+                    $actions = '<div class="d-flex justify-content-end gap-2">';
+
+                    if (auth()->user()->can('services-show')) {
+                        $actions .= '<a href="'.route('admin.services.show', $service).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
+                    }
+
+                    if (auth()->user()->can('services-edit')) {
+                        $actions .= '<a href="'.route('admin.services.edit', $service).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
+                    }
+
+                    if (auth()->user()->can('services-delete')) {
+                        $actions .= '<form method="POST" action="'.route('admin.services.destroy', $service).'" onsubmit="return confirm(\'Are you sure you want to delete this service?\')" class="d-inline">
+                            '.csrf_field().method_field('DELETE').'
                             <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>
-                    </div>';
+                        </form>';
+                    }
+
+                    $actions .= '</div>';
+
+                    return $actions;
                 })
                 ->rawColumns(['title', 'description', 'status', 'actions'])
                 ->make(true);
@@ -65,22 +79,16 @@ class ServiceController extends AdminController
 
     public function create()
     {
+        $this->authorize('create', Service::class);
+
         return view('admin.services.create');
     }
 
-    public function store(Request $request)
+    public function store(ServiceRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'is_featured' => 'boolean',
-            'is_visible' => 'boolean',
-            'sort_order' => 'nullable|integer',
-        ]);
+        $this->authorize('create', Service::class);
 
-        $validated['is_featured'] = $request->boolean('is_featured');
-        $validated['is_visible'] = $request->boolean('is_visible', true);
+        $validated = $request->validated();
         $validated['user_id'] = auth()->id();
 
         Service::create($validated);
@@ -90,28 +98,24 @@ class ServiceController extends AdminController
 
     public function show(Service $service)
     {
+        $this->authorize('view', $service);
+        $service->load('user');
+
         return view('admin.services.show', compact('service'));
     }
 
     public function edit(Service $service)
     {
+        $this->authorize('update', $service);
+
         return view('admin.services.edit', compact('service'));
     }
 
-    public function update(Request $request, Service $service)
+    public function update(ServiceRequest $request, Service $service)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'is_featured' => 'boolean',
-            'is_visible' => 'boolean',
-            'sort_order' => 'nullable|integer',
-        ]);
+        $this->authorize('update', $service);
 
-        $validated['is_featured'] = $request->boolean('is_featured');
-        $validated['is_visible'] = $request->boolean('is_visible', true);
-
+        $validated = $request->validated();
         $service->update($validated);
 
         return redirect()->route('admin.services.index')->with('success', 'Service updated successfully.');
@@ -119,7 +123,23 @@ class ServiceController extends AdminController
 
     public function destroy(Service $service)
     {
+        $this->authorize('delete', $service);
         $service->delete();
+
         return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
+    }
+
+    public function toggleStatus(Request $request, Service $service)
+    {
+        $this->authorize('toggleStatus', $service);
+
+        $field = $request->get('field');
+        if (in_array($field, ['is_visible', 'is_featured'])) {
+            $service->update([$field => ! $service->$field]);
+
+            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Invalid field.'], 400);
     }
 }
