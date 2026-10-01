@@ -19,20 +19,17 @@ if (! function_exists('checkRocketFlareUser')) {
      */
     function checkRocketFlareUser(): int
     {
-        if (! auth()->check()) {
+        if (!auth()->check()) {
             return 0;
         }
 
         $user = auth()->user();
-
         if ($user->hasRole('Super Admin')) {
             return 1;
         }
-
         if ($user->hasRole('Admin')) {
             return 2;
         }
-
         return 0;
     }
 }

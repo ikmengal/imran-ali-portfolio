@@ -9,13 +9,18 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SkillController extends AdminController
 {
-    public function index(Request $request)
+public function index(Request $request)
     {
+        $filters = $this->getFilters(Skill::class);
+        $categories = Skill::query()->select('category')->distinct()->pluck('category')->filter()->values();
+
         if ($request->ajax()) {
             $query = Skill::with('user:id,name')->ordered();
             $query = $this->scopeRecords($query);
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('name', function ($skill) {
                     $icon = '';
                     if ($skill->icon) {
@@ -55,36 +60,30 @@ class SkillController extends AdminController
 
                     return '<div class="d-flex flex-wrap">'.implode('', $badges).'</div>';
                 })
-                ->addColumn('sort_order', function ($skill) {
-                    return $skill->sort_order ?? 0;
-                })
                 ->addColumn('actions', function ($skill) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
-
-                    if (auth()->user()->can('skills-show')) {
-                        $actions .= '<a href="'.route('admin.skills.show', $skill).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
-                    }
-
-                    if (auth()->user()->can('skills-edit')) {
-                        $actions .= '<a href="'.route('admin.skills.edit', $skill).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
-                    }
-
-                    if (auth()->user()->can('skills-delete')) {
-                        $actions .= '<form method="POST" action="'.route('admin.skills.destroy', $skill).'" onsubmit="return confirm(\'Are you sure you want to delete this skill?\')" class="d-inline">
-                            '.csrf_field().method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>';
-                    }
-
+                        if (auth()->user()->can('skills-show')) {
+                            $actions .= '<a href="'.route('admin.skills.show', $skill).'" class="btn btn-sm btn-icon btn-label-info" title="View">
+                                <i class="ti ti-eye"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('skills-edit')) {
+                            $actions .= '<a href="'.route('admin.skills.edit', $skill).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit">
+                                <i class="ti ti-edit"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('skills-delete')) {
+                            $actions .= '<button data-del-url="'.route('admin.skills.destroy', $skill).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
+                                    <i class="ti ti-trash"></i>
+                                </button>';
+                        }
                     $actions .= '</div>';
-
                     return $actions;
                 })
                 ->rawColumns(['name', 'percentage', 'status', 'actions'])
-                ->make(true);
+            ->make(true);
         }
-
-        return view('admin.skills.index');
+        return view('admin.skills.index', compact('categories'));
     }
 
     public function create()
@@ -136,7 +135,7 @@ class SkillController extends AdminController
         $this->authorize('delete', $skill);
         $skill->delete();
 
-        return redirect()->route('admin.skills.index')->with('success', 'Skill deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Skill deleted successfully.']);
     }
 
     public function toggleStatus(Request $request, Skill $skill)

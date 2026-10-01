@@ -13,16 +13,19 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends AdminController
 {
-    public function index(Request $request)
+public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $query = User::with('roles:id,name');
+        $filters = $this->getFilters(User::class);
 
-            if ($request->filled('trashed')) {
-                $query->onlyTrashed();
-            }
+        if ($request->ajax()) {
+            $query = User::with('roles:id,name')->whereHas('roles', function ($q) {
+                $q->where('name', 'User');
+            });
+
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('name', function ($user) {
                     $image = $user->profile_image
                         ? asset('storage/'.$user->profile_image)
@@ -59,54 +62,56 @@ class UserController extends AdminController
                 })
                 ->addColumn('email_verified', function ($user) {
                     if ($user->email_verified_at) {
-                        return '<span class="badge bg-label-success"><i class="bx bx-check me-1"></i>Verified</span>';
+                        return '<span class="badge bg-label-success"><i class="ti ti-check me-1"></i>Verified</span>';
                     }
-
-                    return '<span class="badge bg-label-secondary"><i class="bx bx-x me-1"></i>Unverified</span>';
+                    return '<span class="badge bg-label-secondary"><i class="ti ti-x me-1"></i>Unverified</span>';
                 })
                 ->addColumn('created_at', function ($user) {
                     return '<small>'.$user->created_at->format('M d, Y').'</small>';
                 })
                 ->addColumn('actions', function ($user) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
-
-                    if (auth()->user()->can('users-show')) {
-                        $actions .= '<a href="'.route('admin.users.show', $user).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
-                    }
-
-                    if (auth()->user()->can('users-edit') && ! $user->trashed()) {
-                        $actions .= '<a href="'.route('admin.users.edit', $user).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
-                    }
-
-                    if (auth()->user()->can('users-delete')) {
-                        if ($user->trashed()) {
-                            if (auth()->user()->hasRole('Super Admin')) {
-                                $actions .= '<form method="POST" action="'.route('admin.users.force-delete', $user).'" onsubmit="return confirm(\'Are you sure you want to permanently delete this user? This cannot be undone.\')" class="d-inline">
-                                    '.csrf_field().method_field('DELETE').'
-                                    <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Force Delete"><i class="bx bx-trash"></i></button>
+                        if (auth()->user()->can('users-show')) {
+                            $actions .= '<a href="'.route('admin.users.show', $user).'" class="btn btn-sm btn-icon btn-label-info" title="View">
+                                <i class="ti ti-eye"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('users-edit') && ! $user->trashed()) {
+                            $actions .= '<a href="'.route('admin.users.edit', $user).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit">
+                                <i class="ti ti-edit"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('users-delete')) {
+                            if ($user->trashed()) {
+                                if (auth()->user()->hasRole('Super Admin')) {
+                                    $actions .= '<button data-del-url="'.route('admin.users.force-delete', $user).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Force Delete">
+                                            <i class="ti ti-trash"></i>
+                                        </button>';
+                                    $actions .= '<a href="'.route('admin.users.restore', $user).'" class="btn btn-sm btn-icon btn-label-success" title="Restore">
+                                        <i class="ti ti-undo"></i>
+                                    </a>';
+                                }
+                            } else {
+                                $actions .= '<button data-del-url="'.route('admin.users.destroy', $user).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
+                                        <i class="ti ti-trash"></i>
+                                    </button>
                                 </form>';
-                                $actions .= '<a href="'.route('admin.users.restore', $user).'" class="btn btn-sm btn-icon btn-label-success" title="Restore"><i class="bx bx-undo"></i></a>';
                             }
-                        } else {
-                            $actions .= '<form method="POST" action="'.route('admin.users.destroy', $user).'" onsubmit="return confirm(\'Are you sure you want to delete this user?\')" class="d-inline">
-                                '.csrf_field().method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
+                        }
+                        if (auth()->user()->can('users-edit') && $user->id !== auth()->id()) {
+                            $actions .= '<form action="'.route('admin.users.generate-password', $user).'" method="POST" class="d-inline">
+                                '.csrf_field().'
+                                <button type="submit" class="btn btn-sm btn-icon btn-label-secondary" title="Generate Password" onclick="return confirm(\'Generate new password for this user?\')">
+                                    <i class="ti ti-key"></i>
+                                </button>
                             </form>';
                         }
-                    }
-
-                    if (auth()->user()->can('users-edit') && $user->id !== auth()->id()) {
-                        $actions .= '<a href="'.route('admin.users.generate-password', $user).'" class="btn btn-sm btn-icon btn-label-secondary" title="Generate Password"><i class="bx bx-key"></i></a>';
-                    }
-
                     $actions .= '</div>';
-
                     return $actions;
                 })
-                ->rawColumns(['name', 'roles', 'status', 'email_verified', 'actions'])
-                ->make(true);
+                ->rawColumns(['name', 'roles', 'status', 'email_verified', 'created_at', 'actions'])
+            ->make(true);
         }
-
         return view('admin.users.index');
     }
 
@@ -190,14 +195,11 @@ class UserController extends AdminController
     public function destroy(User $user)
     {
         $this->authorize('delete', $user);
-
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
         }
-
         $user->delete();
-
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'User deleted successfully.']);
     }
 
     public function trashed()
@@ -227,7 +229,7 @@ class UserController extends AdminController
 
         $user->forceDelete();
 
-        return redirect()->route('admin.users.trashed')->with('success', 'User permanently deleted.');
+        return response()->json(['success' => true, 'message' => 'User permanently deleted.']);
     }
 
     public function generatePassword(User $user)

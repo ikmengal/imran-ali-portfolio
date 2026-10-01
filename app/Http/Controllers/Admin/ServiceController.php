@@ -11,11 +11,15 @@ class ServiceController extends AdminController
 {
     public function index(Request $request)
     {
+        $filters = $this->getFilters(Service::class);
+
         if ($request->ajax()) {
             $query = Service::with('user:id,name')->ordered();
             $query = $this->scopeRecords($query);
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('title', function ($service) {
                     $icon = '';
                     if ($service->icon) {
@@ -45,25 +49,25 @@ class ServiceController extends AdminController
 
                     return '<div class="d-flex flex-wrap">'.implode('', $badges).'</div>';
                 })
-                ->addColumn('sort_order', function ($service) {
-                    return $service->sort_order ?? 0;
-                })
                 ->addColumn('actions', function ($service) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
 
                     if (auth()->user()->can('services-show')) {
-                        $actions .= '<a href="'.route('admin.services.show', $service).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
+                        $actions .= '<a href="'.route('admin.services.show', $service).'" class="btn btn-sm btn-icon btn-label-info" title="View">
+                            <i class="ti ti-eye"></i>
+                        </a>';
                     }
 
                     if (auth()->user()->can('services-edit')) {
-                        $actions .= '<a href="'.route('admin.services.edit', $service).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
+                        $actions .= '<a href="'.route('admin.services.edit', $service).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit">
+                            <i class="ti ti-edit"></i>
+                        </a>';
                     }
 
                     if (auth()->user()->can('services-delete')) {
-                        $actions .= '<form method="POST" action="'.route('admin.services.destroy', $service).'" onsubmit="return confirm(\'Are you sure you want to delete this service?\')" class="d-inline">
-                            '.csrf_field().method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>';
+                        $actions .= '<button data-del-url="'.route('admin.services.destroy', $service).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
+                            <i class="ti ti-trash"></i>
+                        </button>';
                     }
 
                     $actions .= '</div>';
@@ -71,9 +75,8 @@ class ServiceController extends AdminController
                     return $actions;
                 })
                 ->rawColumns(['title', 'description', 'status', 'actions'])
-                ->make(true);
+            ->make(true);
         }
-
         return view('admin.services.index');
     }
 
@@ -126,7 +129,7 @@ class ServiceController extends AdminController
         $this->authorize('delete', $service);
         $service->delete();
 
-        return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Service deleted successfully.']);
     }
 
     public function toggleStatus(Request $request, Service $service)

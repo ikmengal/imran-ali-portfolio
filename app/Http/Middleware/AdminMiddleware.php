@@ -17,7 +17,7 @@ class AdminMiddleware
 
         $user = Auth::user();
 
-        if (! $user->hasAnyRole(['Super Admin', 'Admin'])) {
+        if (! $user->hasAnyRole(['Super Admin', 'Admin', 'User'])) {
             abort(403, 'Unauthorized. Admin access required.');
         }
 

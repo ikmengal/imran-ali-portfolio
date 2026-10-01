@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Service extends Model
 {
@@ -13,12 +14,22 @@ class Service extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'slug',
         'icon',
         'description',
         'is_featured',
         'is_visible',
         'sort_order',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Service $service) {
+            if (empty($service->slug)) {
+                $service->slug = Str::slug($service->title);
+            }
+        });
+    }
 
     protected $casts = [
         'is_featured' => 'boolean',

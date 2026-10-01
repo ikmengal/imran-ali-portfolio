@@ -10,13 +10,17 @@ use Yajra\DataTables\Facades\DataTables;
 
 class TestimonialController extends AdminController
 {
-    public function index(Request $request)
+public function index(Request $request)
     {
+        $filters = $this->getFilters(Testimonial::class);
+
         if ($request->ajax()) {
             $query = Testimonial::with('user:id,name')->ordered();
             $query = $this->scopeRecords($query);
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('image', function ($testimonial) {
                     if ($testimonial->image) {
                         return '<img src="'.asset('storage/'.$testimonial->image).'" alt="" class="img-fluid rounded" style="width: 50px; height: 50px; object-fit: cover;">';
@@ -34,9 +38,9 @@ class TestimonialController extends AdminController
                     $stars = '';
                     for ($i = 1; $i <= 5; $i++) {
                         if ($i <= ($testimonial->rating ?? 5)) {
-                            $stars .= '<i class="bx bxs-star text-warning"></i>';
+                            $stars .= '<i class="ti ti-star text-warning"></i>';
                         } else {
-                            $stars .= '<i class="bx bx-star text-warning"></i>';
+                            $stars .= '<i class="ti ti-star text-warning"></i>';
                         }
                     }
 
@@ -52,35 +56,30 @@ class TestimonialController extends AdminController
 
                     return '<span class="badge bg-label-secondary">Hidden</span>';
                 })
-                ->addColumn('sort_order', function ($testimonial) {
-                    return $testimonial->sort_order ?? 0;
-                })
                 ->addColumn('actions', function ($testimonial) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
-
-                    if (auth()->user()->can('testimonials-show')) {
-                        $actions .= '<a href="'.route('admin.testimonials.show', $testimonial).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
-                    }
-
-                    if (auth()->user()->can('testimonials-edit')) {
-                        $actions .= '<a href="'.route('admin.testimonials.edit', $testimonial).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
-                    }
-
-                    if (auth()->user()->can('testimonials-delete')) {
-                        $actions .= '<form method="POST" action="'.route('admin.testimonials.destroy', $testimonial).'" onsubmit="return confirm(\'Are you sure you want to delete this testimonial?\')" class="d-inline">
-                            '.csrf_field().method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>';
-                    }
-
+                        if (auth()->user()->can('testimonials-show')) {
+                            $actions .= '<a href="'.route('admin.testimonials.show', $testimonial).'" class="btn btn-sm btn-icon btn-label-info" title="View">
+                                <i class="ti ti-eye"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('testimonials-edit')) {
+                            $actions .= '<a href="'.route('admin.testimonials.edit', $testimonial).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit">
+                                <i class="ti ti-edit"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('testimonials-delete')) {
+                            $actions .= '<button data-del-url="'.route('admin.testimonials.destroy', $testimonial).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </form>';
+                        }
                     $actions .= '</div>';
-
                     return $actions;
                 })
                 ->rawColumns(['image', 'name', 'rating', 'message', 'status', 'actions'])
-                ->make(true);
+            ->make(true);
         }
-
         return view('admin.testimonials.index');
     }
 
@@ -149,7 +148,7 @@ class TestimonialController extends AdminController
         }
         $testimonial->delete();
 
-        return redirect()->route('admin.testimonials.index')->with('success', 'Testimonial deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Testimonial deleted successfully.']);
     }
 
     public function toggleStatus(Request $request, Testimonial $testimonial)

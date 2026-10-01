@@ -41,7 +41,7 @@
                                     <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
                                         <span class="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
                                             <i class="ph-fill ph-clock text-xs"></i>
-                                            {{ $experience->start_date->format('M Y') }} - {{ $experience->is_current ? 'Present' : $experience->end_date->format('M Y') }}
+                                            {{ $experience->start_date?->format('M Y') ?? 'Unknown' }} - {{ $experience->is_current ? 'Present' : ($experience->end_date?->format('M Y') ?? 'Unknown') }}
                                         </span>
                                         @if($experience->employment_type)
                                             <span class="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800">

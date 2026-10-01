@@ -145,13 +145,13 @@
                             <input type="number" name="technologies[{{ $index }}][sort_order]" class="form-control" value="{{ $tech->sort_order ?? $index }}" placeholder="Order" min="0">
                         </div>
                         <div class="col-md-1">
-                            <button type="button" class="btn btn-outline-danger remove-tech"><i class="bx bx-trash"></i></button>
+                            <button type="button" class="btn btn-outline-danger remove-tech"><i class="ti ti-trash"></i></button>
                         </div>
                     </div>
                 @endforeach
             </div>
             <button type="button" id="add-technology" class="btn btn-outline-primary btn-sm">
-                <i class="bx bx-plus me-1"></i> Add Technology
+                <i class="ti ti-plus me-1"></i> Add Technology
             </button>
         </div>
 
@@ -166,52 +166,51 @@
     </form>
 </div>
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            let techIndex = {{ $project->technologies->count() }};
 
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        let techIndex = {{ $project->technologies->count() }};
-
-        $('#add-technology').click(function() {
-            const html = `
-                <div class="technology-row row g-2 mb-2">
-                    <div class="col-md-8">
-                        <input type="text" name="technologies[${techIndex}][name]" class="form-control" placeholder="Technology name" required>
+            $('#add-technology').click(function() {
+                const html = `
+                    <div class="technology-row row g-2 mb-2">
+                        <div class="col-md-8">
+                            <input type="text" name="technologies[${techIndex}][name]" class="form-control" placeholder="Technology name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" name="technologies[${techIndex}][sort_order]" class="form-control" placeholder="Order" value="${techIndex}" min="0">
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger remove-tech"><i class="ti ti-trash"></i></button>
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <input type="number" name="technologies[${techIndex}][sort_order]" class="form-control" placeholder="Order" value="${techIndex}" min="0">
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-outline-danger remove-tech"><i class="bx bx-trash"></i></button>
-                    </div>
-                </div>
-            `;
-            $('#technologies-container').append(html);
-            techIndex++;
-            updateRemoveButtons();
-        });
-
-        $(document).on('click', '.remove-tech', function() {
-            $(this).closest('.technology-row').remove();
-            updateRemoveButtons();
-        });
-
-        function updateRemoveButtons() {
-            const rows = $('.technology-row');
-            rows.each(function(index) {
-                $(this).find('input[name^="technologies"]').each(function() {
-                    const name = $(this).attr('name').replace(/technologies\[\d+\]/, `technologies[${index}]`);
-                    $(this).attr('name', name);
-                });
-                $(this).find('.remove-tech').toggle(rows.length > 1);
+                `;
+                $('#technologies-container').append(html);
+                techIndex++;
+                updateRemoveButtons();
             });
-        }
 
-        updateRemoveButtons();
+            $(document).on('click', '.remove-tech', function() {
+                $(this).closest('.technology-row').remove();
+                updateRemoveButtons();
+            });
 
-        if (typeof CKEDITOR !== 'undefined') {
-            CKEDITOR.replace('description');
-        }
-    });
-</script>
+            function updateRemoveButtons() {
+                const rows = $('.technology-row');
+                rows.each(function(index) {
+                    $(this).find('input[name^="technologies"]').each(function() {
+                        const name = $(this).attr('name').replace(/technologies\[\d+\]/, `technologies[${index}]`);
+                        $(this).attr('name', name);
+                    });
+                    $(this).find('.remove-tech').toggle(rows.length > 1);
+                });
+            }
+
+            updateRemoveButtons();
+
+            if (typeof CKEDITOR !== 'undefined') {
+                CKEDITOR.replace('description');
+            }
+        });
+    </script>
 @endpush

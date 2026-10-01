@@ -1,7 +1,5 @@
 @extends('admin.layouts.app')
-
 @section('title', 'Create Education')
-
 @section('content')
 <div class="max-2xl mx-auto">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,7 +8,7 @@
             <p class="text-muted mb-0">Add a new education entry</p>
         </div>
         <a href="{{ route('admin.education.index') }}" class="btn btn-secondary">
-            <i class="bx bx-arrow-back me-1"></i> Back
+            <i class="ti ti-arrow-back me-1"></i> Back
         </a>
     </div>
 
@@ -111,7 +109,7 @@
             <div class="d-flex justify-content-end gap-2">
                 <a href="{{ route('admin.education.index') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bx bx-save me-1"></i> Save Education
+                    <i class="ti ti-save me-1"></i> Save Education
                 </button>
             </div>
         </div>

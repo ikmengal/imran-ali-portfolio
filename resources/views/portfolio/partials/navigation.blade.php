@@ -3,9 +3,13 @@
         <div class="flex items-center justify-between h-16 lg:h-20">
             <div class="flex items-center">
                 <a href="#home" class="flex items-center gap-2" aria-label="Go to homepage">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                        <i class="ph-fill ph-code text-white text-xl"></i>
-                    </div>
+                    @if($user->logo)
+                        <img src="{{ asset('storage/users/' . $user->logo) }}" alt="{{ $user->name }}" class="h-10 w-auto">
+                    @else
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                            <i class="ph-fill ph-code text-white text-xl"></i>
+                        </div>
+                    @endif
                     <span class="font-space font-bold text-xl text-slate-900 dark:text-white hidden sm:block">{{ $user->name ?? 'Developer' }}</span>
                 </a>
             </div>

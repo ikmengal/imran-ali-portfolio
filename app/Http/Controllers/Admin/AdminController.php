@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\Traits\Filterable;
 use App\Models\ContactMessage;
 use App\Models\Education;
 use App\Models\Experience;
@@ -15,7 +16,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AdminController extends Controller
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, Filterable;
 
     protected function scopeRecords(Builder $query): Builder
     {
@@ -35,6 +36,75 @@ class AdminController extends Controller
         }
 
         return $query;
+    }
+
+    protected function getFilters(string $modelClass): array
+    {
+        return match ($modelClass) {
+            Project::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'title', 'label' => 'Search Title'],
+                ['name' => 'category', 'type' => 'select', 'column' => 'category', 'label' => 'Category', 'options' => $this->getFilterOptions(Project::class, 'category')],
+                ['name' => 'is_visible', 'type' => 'boolean', 'column' => 'is_visible', 'label' => 'Visibility', 'options' => [1 => 'Visible', 0 => 'Hidden']],
+                ['name' => 'is_featured', 'type' => 'boolean', 'column' => 'is_featured', 'label' => 'Featured', 'options' => [1 => 'Featured', 0 => 'Not Featured']],
+            ],
+            Experience::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'job_title', 'label' => 'Search Job Title'],
+                ['name' => 'company', 'type' => 'search', 'column' => 'company', 'label' => 'Search Company'],
+                ['name' => 'employment_type', 'type' => 'select', 'column' => 'employment_type', 'label' => 'Employment Type', 'options' => $this->getFilterOptions(Experience::class, 'employment_type')],
+                ['name' => 'is_visible', 'type' => 'boolean', 'column' => 'is_visible', 'label' => 'Visibility', 'options' => [1 => 'Visible', 0 => 'Hidden']],
+                ['name' => 'is_current', 'type' => 'boolean', 'column' => 'is_current', 'label' => 'Current', 'options' => [1 => 'Current', 0 => 'Past']],
+            ],
+            Education::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'degree', 'label' => 'Search Degree'],
+                ['name' => 'institution', 'type' => 'search', 'column' => 'institution', 'label' => 'Search Institution'],
+                ['name' => 'is_visible', 'type' => 'boolean', 'column' => 'is_visible', 'label' => 'Visibility', 'options' => [1 => 'Visible', 0 => 'Hidden']],
+                ['name' => 'is_current', 'type' => 'boolean', 'column' => 'is_current', 'label' => 'Current', 'options' => [1 => 'Current', 0 => 'Completed']],
+            ],
+            Skill::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'name', 'label' => 'Search Skill'],
+                ['name' => 'category', 'type' => 'select', 'column' => 'category', 'label' => 'Category', 'options' => $this->getFilterOptions(Skill::class, 'category')],
+                ['name' => 'is_visible', 'type' => 'boolean', 'column' => 'is_visible', 'label' => 'Visibility', 'options' => [1 => 'Visible', 0 => 'Hidden']],
+                ['name' => 'is_featured', 'type' => 'boolean', 'column' => 'is_featured', 'label' => 'Featured', 'options' => [1 => 'Featured', 0 => 'Not Featured']],
+            ],
+            Service::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'title', 'label' => 'Search Title'],
+                ['name' => 'is_visible', 'type' => 'boolean', 'column' => 'is_visible', 'label' => 'Visibility', 'options' => [1 => 'Visible', 0 => 'Hidden']],
+                ['name' => 'is_featured', 'type' => 'boolean', 'column' => 'is_featured', 'label' => 'Featured', 'options' => [1 => 'Featured', 0 => 'Not Featured']],
+            ],
+            Testimonial::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'name', 'label' => 'Search Name'],
+                ['name' => 'company', 'type' => 'search', 'column' => 'company', 'label' => 'Search Company'],
+                ['name' => 'rating', 'type' => 'select', 'column' => 'rating', 'label' => 'Rating', 'options' => [5 => '5 Stars', 4 => '4 Stars', 3 => '3 Stars', 2 => '2 Stars', 1 => '1 Star']],
+                ['name' => 'is_visible', 'type' => 'boolean', 'column' => 'is_visible', 'label' => 'Visibility', 'options' => [1 => 'Visible', 0 => 'Hidden']],
+            ],
+            ContactMessage::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'name', 'label' => 'Search Name'],
+                ['name' => 'email', 'type' => 'search', 'column' => 'email', 'label' => 'Search Email'],
+                ['name' => 'is_read', 'type' => 'boolean', 'column' => 'is_read', 'label' => 'Status', 'options' => [1 => 'Read', 0 => 'Unread']],
+            ],
+            User::class => [
+                ['name' => 'search', 'type' => 'search', 'column' => 'name', 'label' => 'Search Name'],
+                ['name' => 'email', 'type' => 'search', 'column' => 'email', 'label' => 'Search Email'],
+                ['name' => 'role', 'type' => 'custom', 'label' => 'Role', 'options' => ['Super Admin' => 'Super Admin', 'Admin' => 'Admin', 'User' => 'User'], 'callback' => function ($query, $value) {
+                    $query->whereHas('roles', function ($q) use ($value) {
+                        $q->where('name', $value);
+                    });
+                }],
+                ['name' => 'status', 'type' => 'custom', 'label' => 'Status', 'options' => ['active' => 'Active', 'trashed' => 'Trashed'], 'callback' => function ($query, $value) {
+                    if ($value === 'trashed') {
+                        $query->onlyTrashed();
+                    }
+                }],
+                ['name' => 'email_verified', 'type' => 'custom', 'label' => 'Email Verified', 'options' => [1 => 'Verified', 0 => 'Unverified'], 'callback' => function ($query, $value) {
+                    if ($value == 1) {
+                        $query->whereNotNull('email_verified_at');
+                    } elseif ($value == 0) {
+                        $query->whereNull('email_verified_at');
+                    }
+                }],
+            ],
+            default => [],
+        };
     }
 
     protected function authorizeRecord($record): void

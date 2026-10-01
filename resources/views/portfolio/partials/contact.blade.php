@@ -63,16 +63,36 @@
                     <div class="mt-10 pt-8 border-t border-slate-800">
                         <h4 class="font-medium text-white mb-4">Follow Me</h4>
                         <div class="flex items-center gap-4">
-                            @foreach([
-                                ['icon' => 'ph-fill ph-github-logo', 'url' => $user->github_url ?? '#', 'color' => 'hover:text-white'],
-                                ['icon' => 'ph-fill ph-linkedin-logo', 'url' => $user->linkedin_url ?? '#', 'color' => 'hover:text-sky-400'],
-                                ['icon' => 'ph-fill ph-twitter-logo', 'url' => $user->twitter_url ?? '#', 'color' => 'hover:text-sky-300'],
-                                ['icon' => 'ph-fill ph-youtube-logo', 'url' => $user->youtube_url ?? '#', 'color' => 'hover:text-red-400'],
-                            ] as $social)
-                                <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 {{ $social['color'] }} transition-all duration-200 hover:bg-primary-500/20">
-                                    <i class="{{ $social['icon'] }} text-xl"></i>
+                            @if($user->github)
+                                <a href="{{ $user->github }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="GitHub">
+                                    <i class="ph-fill ph-github-logo text-xl"></i>
                                 </a>
-                            @endforeach
+                            @endif
+                            @if($user->linkedin)
+                                <a href="{{ $user->linkedin }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-sky-400 transition-all duration-200 hover:bg-primary-500/20" aria-label="LinkedIn">
+                                    <i class="ph-fill ph-linkedin-logo text-xl"></i>
+                                </a>
+                            @endif
+                            @if($user->twitter)
+                                <a href="{{ $user->twitter }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-sky-300 transition-all duration-200 hover:bg-primary-500/20" aria-label="Twitter">
+                                    <i class="ph-fill ph-twitter-logo text-xl"></i>
+                                </a>
+                            @endif
+                            @if($user->youtube)
+                                <a href="{{ $user->youtube }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-red-400 transition-all duration-200 hover:bg-primary-500/20" aria-label="YouTube">
+                                    <i class="ph-fill ph-youtube-logo text-xl"></i>
+                                </a>
+                            @endif
+                            @if($user->facebook)
+                                <a href="{{ $user->facebook }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-blue-400 transition-all duration-200 hover:bg-primary-500/20" aria-label="Facebook">
+                                    <i class="ph-fill ph-facebook-logo text-xl"></i>
+                                </a>
+                            @endif
+                            @if($user->instagram)
+                                <a href="{{ $user->instagram }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-pink-400 transition-all duration-200 hover:bg-primary-500/20" aria-label="Instagram">
+                                    <i class="ph-fill ph-instagram-logo text-xl"></i>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>

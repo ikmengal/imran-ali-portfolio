@@ -181,9 +181,7 @@
                dropdownParent: $(this).parent(),
            });
        });
-       if (typeof description !== 'undefined') {
-           CKEDITOR.replace('description');
-       }
+
 
        $(document).on('keyup', '.cnic_number', function() {
            var cnic = $(this).val();

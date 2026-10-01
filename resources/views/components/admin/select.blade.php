@@ -1,7 +1,7 @@
 @props(['label', 'name', 'options' => [], 'value' => null, 'placeholder' => 'Select an option', 'required' => false, 'error' => null, 'help' => null, 'multiple' => false, 'class' => '', 'attributes' => []])
 
 <div class="mb-3">
-    <label for="{{ $name }}" class="form-label">{{ $label }} {{ $required ? '<span class="text-danger">*</span>' : '' }}</label>
+    <label for="{{ $name }}" class="form-label">{{ $label }} {!! $required ? '<span class="text-danger">*</span>' : '' !!}</label>
     <select
         id="{{ $name }}"
         name="{{ $name }}{{ $multiple ? '[]' : '' }}"

@@ -10,10 +10,14 @@ use App\Models\Service;
 use App\Models\Skill;
 use App\Models\Testimonial;
 use App\Models\User;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use App\Policies\ContactMessagePolicy;
 use App\Policies\EducationPolicy;
 use App\Policies\ExperiencePolicy;
+use App\Policies\PermissionPolicy;
 use App\Policies\ProjectPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\ServicePolicy;
 use App\Policies\SkillPolicy;
 use App\Policies\TestimonialPolicy;
@@ -33,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         Testimonial::class => TestimonialPolicy::class,
         ContactMessage::class => ContactMessagePolicy::class,
         User::class => UserPolicy::class,
+        Role::class => RolePolicy::class,
+        Permission::class => PermissionPolicy::class,
     ];
 
     /**

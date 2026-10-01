@@ -24,7 +24,7 @@ class ContactMessagePolicy
 
     public function update(User $user, ContactMessage $message): bool
     {
-        return false;
+        return $user->can('contact_messages-edit');
     }
 
     public function delete(User $user, ContactMessage $message): bool

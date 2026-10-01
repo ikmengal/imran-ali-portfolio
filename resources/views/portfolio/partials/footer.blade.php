@@ -5,9 +5,13 @@
         <div class="grid lg:grid-cols-4 gap-12 mb-12">
             <div class="lg:col-span-2">
                 <a href="#home" class="flex items-center gap-2 mb-4" aria-label="Go to homepage">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                        <i class="ph-fill ph-code text-white text-xl"></i>
-                    </div>
+                    @if($user->logo)
+                        <img src="{{ asset('storage/users/' . $user->logo) }}" alt="{{ $user->name }}" class="h-10 w-auto">
+                    @else
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                            <i class="ph-fill ph-code text-white text-xl"></i>
+                        </div>
+                    @endif
                     <span class="font-space font-bold text-xl text-white">{{ $user->name ?? 'Developer' }}</span>
                 </a>
                 <p class="text-slate-400 max-w-md leading-relaxed mb-6">
@@ -15,16 +19,41 @@
                 </p>
                 
                 <div class="flex flex-wrap gap-4">
-                    @foreach([
-                        ['icon' => 'ph-fill ph-github-logo', 'url' => $user->github_url ?? '#', 'label' => 'GitHub'],
-                        ['icon' => 'ph-fill ph-linkedin-logo', 'url' => $user->linkedin_url ?? '#', 'label' => 'LinkedIn'],
-                        ['icon' => 'ph-fill ph-twitter-logo', 'url' => $user->twitter_url ?? '#', 'label' => 'Twitter'],
-                        ['icon' => 'ph-fill ph-envelope', 'url' => 'mailto:' . ($user->email ?? '#'), 'label' => 'Email'],
-                    ] as $social)
-                        <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="{{ $social['label'] }}">
-                            <i class="{{ $social['icon'] }} text-xl"></i>
+                    @if($user->github)
+                        <a href="{{ $user->github }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="GitHub">
+                            <i class="ph-fill ph-github-logo text-xl"></i>
                         </a>
-                    @endforeach
+                    @endif
+                    @if($user->linkedin)
+                        <a href="{{ $user->linkedin }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="LinkedIn">
+                            <i class="ph-fill ph-linkedin-logo text-xl"></i>
+                        </a>
+                    @endif
+                    @if($user->twitter)
+                        <a href="{{ $user->twitter }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="Twitter">
+                            <i class="ph-fill ph-twitter-logo text-xl"></i>
+                        </a>
+                    @endif
+                    @if($user->facebook)
+                        <a href="{{ $user->facebook }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="Facebook">
+                            <i class="ph-fill ph-facebook-logo text-xl"></i>
+                        </a>
+                    @endif
+                    @if($user->instagram)
+                        <a href="{{ $user->instagram }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="Instagram">
+                            <i class="ph-fill ph-instagram-logo text-xl"></i>
+                        </a>
+                    @endif
+                    @if($user->youtube)
+                        <a href="{{ $user->youtube }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="YouTube">
+                            <i class="ph-fill ph-youtube-logo text-xl"></i>
+                        </a>
+                    @endif
+                    @if($user->email)
+                        <a href="mailto:{{ $user->email }}" class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/20 transition-all duration-200" aria-label="Email">
+                            <i class="ph-fill ph-envelope text-xl"></i>
+                        </a>
+                    @endif
                 </div>
             </div>
             
@@ -56,6 +85,10 @@
                 <p class="text-slate-500 text-sm">
                     &copy; {{ date('Y') }} {{ $user->name ?? 'Full Stack Developer' }}. All rights reserved.
                 </p>
+                
+                @if($user->professional_title)
+                <p class="text-slate-500 text-sm">{{ $user->professional_title }}</p>
+                @endif
                 
                 <div class="flex items-center gap-4 text-sm text-slate-500">
                     <a href="#" class="hover:text-primary-400 transition-colors">Privacy Policy</a>

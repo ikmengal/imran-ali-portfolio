@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,9 +12,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'profile_image', 'bio'])]
+#[Fillable(['name', 'email', 'password', 'profile_image', 'bio', 'professional_title', 'portfolio_slug', 'phone', 'location', 'website', 'linkedin', 'github', 'twitter', 'facebook', 'instagram', 'youtube', 'portfolio_header', 'logo', 'email_verified_at'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable, SoftDeletes;
@@ -70,5 +70,13 @@ class User extends Authenticatable
     public function contactMessages()
     {
         return $this->hasMany(ContactMessage::class);
+    }
+
+    public function getPortfolioUrlAttribute(): ?string
+    {
+        if ($this->portfolio_slug) {
+            return route('portfolio.user', $this->portfolio_slug);
+        }
+        return null;
     }
 }

@@ -4,7 +4,10 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SkillController;
@@ -19,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PortfolioController::class, 'index'])->name('portfolio');
 
 require __DIR__.'/auth.php';
+
+Route::get('/{slug}', [PortfolioController::class, 'index'])->name('portfolio.user');
 
 Route::post('/contact', function (Request $request) {
     $validated = $request->validate([
@@ -35,9 +40,13 @@ Route::post('/contact', function (Request $request) {
     ]);
 })->name('contact.store');
 
-Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified.or.superadmin', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
@@ -60,14 +69,19 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('testimonials', TestimonialController::class);
     Route::post('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
 
-    Route::resource('messages', ContactMessageController::class)->only(['index', 'show', 'destroy']);
+    Route::resource('roles', RoleController::class);
+    Route::post('roles/bulk-permissions', [RoleController::class, 'bulkPermissions'])->name('roles.bulk-permissions');
+
+    Route::resource('permissions', PermissionController::class);
+
+    Route::resource('messages', ContactMessageController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
     Route::post('messages/{message}/read', [ContactMessageController::class, 'markAsRead'])->name('messages.read');
     Route::post('messages/{message}/unread', [ContactMessageController::class, 'markAsUnread'])->name('messages.unread');
     Route::post('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
 
     Route::resource('users', UserController::class);
     Route::get('users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
-    Route::post('users/generate-password', [UserController::class, 'generatePassword'])->name('users.generate-password');
+    Route::post('users/{user}/generate-password', [UserController::class, 'generatePassword'])->name('users.generate-password');
     Route::patch('users/{user}/restore', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
     Route::delete('users/{user}/force-delete', [UserController::class, 'forceDelete'])->withTrashed()->name('users.force-delete');
     Route::patch('users/{user}/password', [UserController::class, 'changePassword'])->name('users.password');

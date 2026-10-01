@@ -4,16 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class ContactMessageController extends AdminController
 {
     public function index(Request $request)
     {
+        $filters = $this->getFilters(ContactMessage::class);
+
         if ($request->ajax()) {
             $query = ContactMessage::latest();
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('name', function ($message) {
                     return '<div>
                         <h6 class="mb-0">'.e($message->name).'</h6>
@@ -27,14 +33,34 @@ class ContactMessageController extends AdminController
 
                     return '<span class="text-muted">—</span>';
                 })
+                ->addColumn('category', function ($message) {
+                    $colors = [
+                        'general' => 'secondary',
+                        'complaint' => 'danger',
+                        'feedback' => 'info',
+                        'query' => 'primary',
+                        'support' => 'warning',
+                    ];
+                    $color = $colors[$message->category] ?? 'secondary';
+                    return '<span class="badge bg-label-'.$color.' text-capitalize">'.$message->category.'</span>';
+                })
+                ->addColumn('status', function ($message) {
+                    $colors = [
+                        'new' => 'primary',
+                        'in_progress' => 'warning',
+                        'resolved' => 'success',
+                        'closed' => 'secondary',
+                    ];
+                    $color = $colors[$message->status] ?? 'primary';
+                    return '<span class="badge bg-label-'.$color.' text-capitalize">'.str_replace('_', ' ', $message->status).'</span>';
+                })
                 ->addColumn('message', function ($message) {
                     return '<div class="text-truncate" style="max-width: 300px;">'.e(Str::limit($message->message, 100)).'</div>';
                 })
-                ->addColumn('status', function ($message) {
+                ->addColumn('read_status', function ($message) {
                     if ($message->read_at) {
                         return '<span class="badge bg-label-success">Read</span>';
                     }
-
                     return '<span class="badge bg-label-danger">Unread</span>';
                 })
                 ->addColumn('created_at', function ($message) {
@@ -42,26 +68,38 @@ class ContactMessageController extends AdminController
                 })
                 ->addColumn('actions', function ($message) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
-
-                    if (auth()->user()->can('contact_messages-show')) {
-                        $actions .= '<a href="'.route('admin.messages.show', $message).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
-                    }
-
-                    if (auth()->user()->can('contact_messages-delete')) {
-                        $actions .= '<form method="POST" action="'.route('admin.messages.destroy', $message).'" onsubmit="return confirm(\'Are you sure you want to delete this message?\')" class="d-inline">
-                            '.csrf_field().method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>';
-                    }
-
+                        if (auth()->user()->can('contact_messages-show')) {
+                            $actions .= '<a href="'.route('admin.messages.show', $message).'" class="btn btn-sm btn-icon btn-label-info" title="View">
+                                <i class="ti ti-eye"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('contact_messages-edit') && ! $message->trashed()) {
+                            $actions .= '<a href="'.route('admin.messages.edit', $message).'" class="btn btn-sm btn-icon btn-label-primary" title="Reply/Edit">
+                                <i class="ti ti-mail-edit"></i>
+                            </a>';
+                        }
+                        if (auth()->user()->can('contact_messages-delete')) {
+                            if ($message->trashed()) {
+                                if (auth()->user()->hasRole('Super Admin')) {
+                                    $actions .= '<button data-del-url="'.route('admin.messages.force-delete', $message).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Force Delete">
+                                            <i class="ti ti-trash"></i>
+                                        </button>';
+                                    $actions .= '<a href="'.route('admin.messages.restore', $message).'" class="btn btn-sm btn-icon btn-label-success" title="Restore">
+                                        <i class="ti ti-undo"></i>
+                                    </a>';
+                                }
+                            } else {
+                                $actions .= '<button data-del-url="'.route('admin.messages.destroy', $message).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
+                                        <i class="ti ti-trash"></i>
+                                    </button>';
+                            }
+                        }
                     $actions .= '</div>';
-
                     return $actions;
                 })
-                ->rawColumns(['name', 'subject', 'message', 'status', 'actions'])
-                ->make(true);
+                ->rawColumns(['name', 'subject', 'category', 'status', 'message', 'read_status', 'actions'])
+            ->make(true);
         }
-
         return view('admin.messages.index');
     }
 
@@ -70,6 +108,34 @@ class ContactMessageController extends AdminController
         $this->authorize('view', $message);
 
         return view('admin.messages.show', compact('message'));
+    }
+
+    public function edit(ContactMessage $message)
+    {
+        $this->authorize('update', $message);
+
+        return view('admin.messages.edit', compact('message'));
+    }
+
+    public function update(Request $request, ContactMessage $message)
+    {
+        $this->authorize('update', $message);
+
+        $validated = $request->validate([
+            'category' => 'required|in:general,complaint,feedback,query,support',
+            'status' => 'required|in:new,in_progress,resolved,closed',
+            'assigned_to' => 'nullable|exists:users,id',
+            'admin_reply' => 'nullable|string',
+        ]);
+
+        if ($request->filled('admin_reply') && ! $message->replied_at) {
+            $validated['replied_at'] = now();
+            $validated['replied_by'] = Auth::id();
+        }
+
+        $message->update($validated);
+
+        return redirect()->route('admin.messages.index')->with('success', 'Message updated successfully.');
     }
 
     public function destroy(ContactMessage $message)

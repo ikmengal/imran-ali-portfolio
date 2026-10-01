@@ -30,8 +30,15 @@
             </a>
         </li>
 
-        @canany(['settings-list'])
-        <li class="menu-item {{ Route::is('admin.settings*') ? 'active open' : ''}}">
+        <li class="menu-item {{ Route::is('admin.profile*') ? 'active' : ''}}">
+            <a href="{{ route('admin.profile.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-user"></i>
+                <div data-i18n="Profile">My Profile</div>
+            </a>
+        </li>
+
+        @canany(['settings-list', 'roles-list', 'permissions-list'])
+        <li class="menu-item {{ Route::is('admin.settings*') || Route::is('admin.roles*') || Route::is('admin.permissions*') ? 'active open' : ''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div data-i18n="Administration">Administration</div>
@@ -41,6 +48,20 @@
                 <li class="menu-item {{ Route::is('admin.settings*') ? 'active' : ''}}">
                     <a href="{{ route('admin.settings.index') }}" class="menu-link">
                         <div data-i18n="Settings">Settings</div>
+                    </a>
+                </li>
+                @endcan
+                @can('roles-list')
+                <li class="menu-item {{ Route::is('admin.roles*') ? 'active' : ''}}">
+                    <a href="{{ route('admin.roles.index') }}" class="menu-link">
+                        <div data-i18n="Roles">Roles</div>
+                    </a>
+                </li>
+                @endcan
+                @can('permissions-list')
+                <li class="menu-item {{ Route::is('admin.permissions*') ? 'active' : ''}}">
+                    <a href="{{ route('admin.permissions.index') }}" class="menu-link">
+                        <div data-i18n="Permissions">Permissions</div>
                     </a>
                 </li>
                 @endcan
@@ -176,7 +197,7 @@
         @canany(['testimonials-list', 'testimonials-create', 'testimonials-edit', 'testimonials-delete'])
         <li class="menu-item {{ Route::is('admin.testimonials*') ? 'active open' : ''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-message-star"></i>
+                <i class="menu-icon tf-icons ti ti-quote"></i>
                 <div data-i18n="Testimonials">Testimonials</div>
             </a>
             <ul class="menu-sub">

@@ -14,17 +14,17 @@
                             <h6 class="text-muted mb-1">Total Projects</h6>
                             <h3 class="mb-0">{{ $stats['projects'] }}</h3>
                             <small class="text-{{ $analytics['projects_growth'] >= 0 ? 'success' : 'danger' }}">
-                                <i class="ph ph-caret-{{ $analytics['projects_growth'] >= 0 ? 'up' : 'down' }}"></i>
+                                <i class="ti ti-caret-{{ $analytics['projects_growth'] >= 0 ? 'up' : 'down' }}"></i>
                                 {{ abs($analytics['projects_growth']) }}% vs last month
                             </small>
                         </div>
                         <div class="badge bg-label-primary p-3 rounded stats-icon">
-                            <i class="ph ph-folder-simple ti-lg"></i>
+                            <i class="ti ti-folder ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-success"><i class="ph ph-eye"></i> {{ $analytics['visible_projects'] }} Visible</span>
-                        <span class="text-warning"><i class="ph ph-star"></i> {{ $analytics['featured_projects'] }} Featured</span>
+                        <span class="text-success"><i class="ti ti-eye"></i> {{ $analytics['visible_projects'] }} Visible</span>
+                        <span class="text-warning"><i class="ti ti-star"></i> {{ $analytics['featured_projects'] }} Featured</span>
                     </div>
                 </div>
             </div>
@@ -40,11 +40,11 @@
                             <small class="text-muted">Showcased on portfolio</small>
                         </div>
                         <div class="badge bg-label-warning p-3 rounded stats-icon">
-                            <i class="ph ph-star ti-lg"></i>
+                            <i class="ti ti-star ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-info"><i class="ph ph-git-branch"></i> {{ $stats['github_projects'] }} on GitHub</span>
+                        <span class="text-info"><i class="ti ti-git-branch"></i> {{ $stats['github_projects'] }} on GitHub</span>
                     </div>
                 </div>
             </div>
@@ -58,17 +58,17 @@
                             <h6 class="text-muted mb-1">Total Skills</h6>
                             <h3 class="mb-0">{{ $stats['skills'] }}</h3>
                             <small class="text-{{ $analytics['skills_growth'] >= 0 ? 'success' : 'danger' }}">
-                                <i class="ph ph-caret-{{ $analytics['skills_growth'] >= 0 ? 'up' : 'down' }}"></i>
+                                <i class="ti ti-caret-{{ $analytics['skills_growth'] >= 0 ? 'up' : 'down' }}"></i>
                                 {{ abs($analytics['skills_growth']) }}% vs last month
                             </small>
                         </div>
                         <div class="badge bg-label-secondary p-3 rounded stats-icon">
-                            <i class="ph ph-code ti-lg"></i>
+                            <i class="ti ti-code ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-success"><i class="ph ph-eye"></i> {{ $analytics['visible_skills'] }} Visible</span>
-                        <span class="text-warning"><i class="ph ph-star"></i> {{ $analytics['featured_skills'] }} Featured</span>
+                        <span class="text-success"><i class="ti ti-eye"></i> {{ $analytics['visible_skills'] }} Visible</span>
+                        <span class="text-warning"><i class="ti ti-star"></i> {{ $analytics['featured_skills'] }} Featured</span>
                     </div>
                 </div>
             </div>
@@ -84,11 +84,11 @@
                             <small class="text-muted">{{ $analytics['visible_experiences'] }} visible on portfolio</small>
                         </div>
                         <div class="badge bg-label-info p-3 rounded stats-icon">
-                            <i class="ph ph-briefcase ti-lg"></i>
+                            <i class="ti ti-briefcase ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-primary"><i class="ph ph-clock"></i> {{ $analytics['current_experiences'] }} Current</span>
+                        <span class="text-primary"><i class="ti ti-clock"></i> {{ $analytics['current_experiences'] }} Current</span>
                     </div>
                 </div>
             </div>
@@ -104,11 +104,11 @@
                             <small class="text-muted">{{ $analytics['visible_education'] }} visible on portfolio</small>
                         </div>
                         <div class="badge bg-label-success p-3 rounded stats-icon">
-                            <i class="ph ph-graduation-cap ti-lg"></i>
+                            <i class="ti ti-school ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-info"><i class="ph ph-book-open"></i> {{ $analytics['current_education'] }} Current</span>
+                        <span class="text-info"><i class="ti ti-book"></i> {{ $analytics['current_education'] }} Current</span>
                     </div>
                 </div>
             </div>
@@ -124,11 +124,11 @@
                             <small class="text-muted">{{ $analytics['visible_services'] }} visible on portfolio</small>
                         </div>
                         <div class="badge bg-label-warning p-3 rounded stats-icon">
-                            <i class="ph ph-wrench ti-lg"></i>
+                            <i class="ti ti-tool ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-warning"><i class="ph ph-star"></i> {{ $analytics['featured_services'] }} Featured</span>
+                        <span class="text-warning"><i class="ti ti-star"></i> {{ $analytics['featured_services'] }} Featured</span>
                     </div>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                             <small class="text-muted">{{ $analytics['visible_testimonials'] }} visible on portfolio</small>
                         </div>
                         <div class="badge bg-label-secondary p-3 rounded stats-icon">
-                            <i class="ph ph-chat-circle-text ti-lg"></i>
+                            <i class="ti ti-quote ti-lg"></i>
                         </div>
                     </div>
                 </div>
@@ -159,23 +159,23 @@
                             <h6 class="text-muted mb-1">Contact Messages</h6>
                             <h3 class="mb-0">{{ $stats['messages'] }}</h3>
                             <small class="text-{{ $analytics['messages_growth'] >= 0 ? 'success' : 'danger' }}">
-                                <i class="ph ph-caret-{{ $analytics['messages_growth'] >= 0 ? 'up' : 'down' }}"></i>
+                                <i class="ti ti-caret-{{ $analytics['messages_growth'] >= 0 ? 'up' : 'down' }}"></i>
                                 {{ abs($analytics['messages_growth']) }}% vs last month
                             </small>
                         </div>
                         <div class="badge bg-label-danger p-3 rounded stats-icon">
-                            <i class="ph ph-envelope ti-lg"></i>
+                            <i class="ti ti-mail ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-danger"><i class="ph ph-envelope-open"></i> {{ $stats['unread_messages'] }} Unread</span>
-                        <span class="text-success"><i class="ph ph-envelope-simple"></i> {{ $stats['messages'] - $stats['unread_messages'] }} Read</span>
+                        <span class="text-danger"><i class="ti ti-mail"></i> {{ $stats['unread_messages'] }} Unread</span>
+                        <span class="text-success"><i class="ti ti-mail-opened"></i> {{ $stats['messages'] - $stats['unread_messages'] }} Read</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
             <div class="card h-100 stats-card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
@@ -185,7 +185,7 @@
                             <small class="text-muted">Projects with GitHub links</small>
                         </div>
                         <div class="badge bg-dark p-3 rounded stats-icon">
-                            <i class="ph ph-github-logo ti-lg"></i>
+                            <i class="ti ti-git-branch ti-lg"></i>
                         </div>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
         </div>
 
         <!-- Charts Row -->
-        <div class="col-lg-8 mb-4">
+        <div class="col-lg-8 col-md-6 col-sm-6 mb-4">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
@@ -212,7 +212,7 @@
             </div>
         </div>
 
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Skills Proficiency Distribution</h5>
@@ -223,7 +223,7 @@
             </div>
         </div>
 
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-8 col-md-6 col-sm-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Skills by Category</h5>
@@ -234,7 +234,7 @@
             </div>
         </div>
 
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6 col-md-6 col-sm-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Projects by Category</h5>
@@ -246,7 +246,7 @@
         </div>
 
         <!-- Recent Items & Activity Row -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6 col-md-6 col-sm-6 mb-4">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
@@ -258,7 +258,7 @@
                 <div class="card-body p-0">
                     @if ($analytics['recent_projects']->isEmpty())
                         <div class="text-center py-4">
-                            <i class="ph ph-folder-simple text-muted" style="font-size: 2rem;"></i>
+                            <i class="ti ti-folder text-muted" style="font-size: 2rem;"></i>
                             <p class="text-muted mb-0 mt-2">No projects added yet</p>
                             <a href="{{ route('admin.projects.create') }}" class="btn btn-primary btn-sm mt-2">Add First Project</a>
                         </div>
@@ -272,7 +272,7 @@
                                                 <img src="{{ asset('storage/' . $project->image) }}" alt="" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
                                             @else
                                                 <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                    <i class="bx bx-image text-secondary"></i>
+                                                    <i class="ti ti-image text-secondary"></i>
                                                 </div>
                                             @endif
                                             <div>
@@ -299,7 +299,7 @@
             </div>
         </div>
 
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 col-md-6 col-sm-6 mb-4">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
@@ -311,7 +311,7 @@
                 <div class="card-body p-0">
                     @if ($analytics['recent_messages']->isEmpty())
                         <div class="text-center py-4">
-                            <i class="ph ph-envelope text-muted" style="font-size: 2rem;"></i>
+                            <i class="ti ti-envelope text-muted" style="font-size: 2rem;"></i>
                             <p class="text-muted mb-0">No messages yet</p>
                         </div>
                     @else
@@ -352,7 +352,7 @@
                 <div class="card-body p-0">
                     @if (empty($recentActivity))
                         <div class="text-center py-4">
-                            <i class="ph ph-clock text-muted" style="font-size: 2rem;"></i>
+                            <i class="ti ti-clock text-muted" style="font-size: 2rem;"></i>
                             <p class="text-muted mb-0">No recent activity</p>
                         </div>
                     @else
@@ -377,7 +377,7 @@
         </div>
 
         <!-- Quick Actions -->
-        <div class="col-12 mb-4">
+        {{-- <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Quick Actions</h5>
@@ -386,56 +386,56 @@
                     <div class="row g-3">
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.projects.create') }}" class="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-folder-simple-plus ti-lg"></i>
+                                <i class="ti ti-folder-simple-plus ti-lg"></i>
                                 <span>Add Project</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.experiences.create') }}" class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-briefcase ti-lg"></i>
+                                <i class="ti ti-briefcase ti-lg"></i>
                                 <span>Add Experience</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.education.create') }}" class="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-graduation-cap ti-lg"></i>
+                                <i class="ti ti-graduation-cap ti-lg"></i>
                                 <span>Add Education</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.skills.create') }}" class="btn btn-outline-secondary w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-code ti-lg"></i>
+                                <i class="ti ti-code ti-lg"></i>
                                 <span>Add Skill</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.services.create') }}" class="btn btn-outline-warning w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-wrench ti-lg"></i>
+                                <i class="ti ti-wrench ti-lg"></i>
                                 <span>Add Service</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.testimonials.create') }}" class="btn btn-outline-danger w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-chat-circle-text ti-lg"></i>
+                                <i class="ti ti-chat-circle-text ti-lg"></i>
                                 <span>Add Testimonial</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.messages.index') }}" class="btn btn-outline-dark w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-envelope ti-lg"></i>
+                                <i class="ti ti-envelope ti-lg"></i>
                                 <span>View Messages</span>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('admin.settings.index') }}" class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center gap-2">
-                                <i class="ph ph-gear ti-lg"></i>
+                                <i class="ti ti-gear ti-lg"></i>
                                 <span>Settings</span>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
 @push('js')

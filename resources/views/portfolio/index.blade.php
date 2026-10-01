@@ -9,12 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/duotone.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/all.js"></script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-sans min-h-screen">
     <div id="app" class="relative overflow-hidden">
@@ -35,6 +30,10 @@
         </main>
 
         @include('portfolio.partials.footer', ['user' => $user])
+
+        <button id="scroll-top" class="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-xl shadow-primary-500/30 opacity-0 invisible transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:-translate-y-1" aria-label="Scroll to top" title="Back to top">
+            <i class="ph-fill ph-caret-up text-xl"></i>
+        </button>
     </div>
 
     @include('portfolio.partials.scripts')

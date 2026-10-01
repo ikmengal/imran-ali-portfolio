@@ -231,6 +231,10 @@ class PermissionSeeder extends Seeder
             ],
             [
                 'label' => 'contact_messages',
+                'name' => 'contact_messages-edit',
+            ],
+            [
+                'label' => 'contact_messages',
                 'name' => 'contact_messages-delete',
             ],
         ];

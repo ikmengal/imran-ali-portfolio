@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Skill extends Model
 {
@@ -13,6 +14,7 @@ class Skill extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'slug',
         'category',
         'percentage',
         'icon',
@@ -20,6 +22,15 @@ class Skill extends Model
         'is_visible',
         'sort_order',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Skill $skill) {
+            if (empty($skill->slug)) {
+                $skill->slug = Str::slug($skill->name);
+            }
+        });
+    }
 
     protected $casts = [
         'percentage' => 'integer',

@@ -30,7 +30,13 @@ class SettingController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:500',
-            'social_links' => 'nullable|json',
+            'social_links' => 'nullable|array',
+            'social_links.facebook' => 'nullable|url|max:255',
+            'social_links.twitter' => 'nullable|url|max:255',
+            'social_links.linkedin' => 'nullable|url|max:255',
+            'social_links.instagram' => 'nullable|url|max:255',
+            'social_links.youtube' => 'nullable|url|max:255',
+            'social_links.github' => 'nullable|url|max:255',
             'meta_data' => 'nullable|json',
         ]);
 
@@ -65,7 +71,7 @@ class SettingController extends Controller
         }
 
         if ($request->filled('social_links')) {
-            $validated['social_links'] = json_decode($request->social_links, true);
+            $validated['social_links'] = array_filter($request->social_links);
         }
 
         if ($request->filled('meta_data')) {

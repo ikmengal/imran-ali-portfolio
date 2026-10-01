@@ -1,3 +1,17 @@
+@if (Session::has('success'))
+   <script>
+       toastr.options = {
+           "closeButton": true,
+           "progressBar": true,
+           "timeOut": 5000
+       }
+       toastr.success("{{ session('success') }}");
+       @if (Session::has('generated_password'))
+           toastr.info("Generated Password: <strong>{{ session('generated_password') }}</strong> <small>(copy this now)</small>", "Password Generated", { timeOut: 10000, allowHtml: true });
+       @endif
+   </script>
+@endif
+
 @if (Session::has('message'))
    <script>
        toastr.options = {

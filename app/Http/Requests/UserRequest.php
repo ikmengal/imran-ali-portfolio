@@ -22,6 +22,7 @@ class UserRequest extends FormRequest
             'password' => $this->isMethod('post') ? ['required', 'string', 'min:8', 'confirmed'] : ['nullable', 'string', 'min:8', 'confirmed'],
             'profile_image' => ['nullable', 'image', 'max:2048'],
             'bio' => ['nullable', 'string'],
+            'portfolio_slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('users', 'portfolio_slug')->ignore($userId)],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['exists:roles,name'],
         ];

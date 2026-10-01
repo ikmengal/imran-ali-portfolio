@@ -1,7 +1,7 @@
 @props(['label', 'name', 'value' => null, 'placeholder' => '', 'required' => false, 'error' => null, 'help' => null, 'rows' => 4, 'class' => '', 'editor' => false])
 
 <div class="mb-3">
-    <label for="{{ $name }}" class="form-label">{{ $label }} {{ $required ? '<span class="text-danger">*</span>' : '' }}</label>
+    <label for="{{ $name }}" class="form-label">{{ $label }} {!! $required ? '<span class="text-danger">*</span>' : '' !!}</label>
     <textarea
         id="{{ $name }}"
         name="{{ $name }}"

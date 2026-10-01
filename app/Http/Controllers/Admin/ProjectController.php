@@ -14,19 +14,22 @@ class ProjectController extends AdminController
 {
     public function index(Request $request)
     {
+        $filters = $this->getFilters(Project::class);
+        $categories = Project::query()->select('category')->distinct()->pluck('category')->filter()->values();
+
         if ($request->ajax()) {
             $query = Project::with('technologies')
                 ->with('user:id,name')
                 ->ordered();
-
             $query = $this->scopeRecords($query);
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('image', function ($project) {
                     if ($project->image) {
                         return '<img src="'.asset('storage/'.$project->image).'" alt="" class="img-fluid rounded" style="width: 60px; height: 40px; object-fit: cover;">';
                     }
-
                     return '<div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 40px;"><i class="bx bx-image text-secondary"></i></div>';
                 })
                 ->addColumn('title', function ($project) {
@@ -55,53 +58,37 @@ class ProjectController extends AdminController
 
                     return '<div class="d-flex flex-wrap">'.implode('', $badges).'</div>';
                 })
-                ->addColumn('technologies', function ($project) {
-                    if ($project->technologies->isEmpty()) {
-                        return '<span class="text-muted">—</span>';
-                    }
-                    $tags = [];
-                    foreach ($project->technologies as $tech) {
-                        $tags[] = '<span class="badge bg-label-primary me-1">'.e($tech->name).'</span>';
-                    }
-
-                    return '<div class="d-flex flex-wrap">'.implode('', $tags).'</div>';
-                })
-                ->addColumn('sort_order', function ($project) {
-                    return $project->sort_order ?? 0;
-                })
                 ->addColumn('actions', function ($project) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
 
                     if (auth()->user()->can('projects-show')) {
-                        $actions .= '<a href="'.route('admin.projects.show', $project).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
+                        $actions .= '<a href="'.route('admin.projects.show', $project).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="ti ti-eye"></i></a>';
                     }
 
                     if (auth()->user()->can('projects-edit')) {
-                        $actions .= '<a href="'.route('admin.projects.edit', $project).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
+                        $actions .= '<a href="'.route('admin.projects.edit', $project).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="ti ti-edit"></i></a>';
                     }
 
                     if (auth()->user()->can('projects-delete')) {
-                        $actions .= '<form method="POST" action="'.route('admin.projects.destroy', $project).'" onsubmit="return confirm(\'Are you sure you want to delete this project?\')" class="d-inline">
-                            '.csrf_field().method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>';
+                        $actions .= '<a href="javascript:;" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete"
+                            data-del-url="'.route('admin.projects.destroy', $project->id).'">
+                            <i class="ti ti-trash"></i>
+                        </a>';
                     }
 
                     $actions .= '</div>';
 
                     return $actions;
                 })
-                ->rawColumns(['image', 'title', 'category', 'status', 'technologies', 'actions'])
-                ->make(true);
+                ->rawColumns(['image', 'title', 'category', 'status', 'actions'])
+            ->make(true);
         }
-
-        return view('admin.projects.index');
+        return view('admin.projects.index', compact('categories'));
     }
 
     public function create()
     {
         $this->authorize('create', Project::class);
-
         return view('admin.projects.create');
     }
 
@@ -195,7 +182,7 @@ class ProjectController extends AdminController
         }
         $project->delete();
 
-        return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Project deleted successfully.']);
     }
 
     public function toggleStatus(Request $request, Project $project)

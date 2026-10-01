@@ -9,13 +9,17 @@ use Yajra\DataTables\Facades\DataTables;
 
 class EducationController extends AdminController
 {
-    public function index(Request $request)
+public function index(Request $request)
     {
+        $filters = $this->getFilters(Education::class);
+
         if ($request->ajax()) {
             $query = Education::with('user:id,name')->ordered();
             $query = $this->scopeRecords($query);
+            $query = $this->applyFilters($query, $request, $filters);
 
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('degree', function ($education) {
                     return '<div>
                         <h6 class="mb-1">'.e($education->degree).'</h6>
@@ -39,7 +43,6 @@ class EducationController extends AdminController
                     if ($education->location) {
                         return '<small class="text-muted">'.e($education->location).'</small>';
                     }
-
                     return '<span class="text-muted">—</span>';
                 })
                 ->addColumn('status', function ($education) {
@@ -55,25 +58,20 @@ class EducationController extends AdminController
 
                     return '<div class="d-flex flex-wrap">'.implode('', $badges).'</div>';
                 })
-                ->addColumn('sort_order', function ($education) {
-                    return $education->sort_order ?? 0;
-                })
                 ->addColumn('actions', function ($education) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
-
                     if (auth()->user()->can('educations-show')) {
-                        $actions .= '<a href="'.route('admin.education.show', $education).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="bx bx-show"></i></a>';
+                        $actions .= '<a href="'.route('admin.education.show', $education).'" class="btn btn-sm btn-icon btn-label-info" title="View"><i class="ti ti-eye"></i></a>';
                     }
 
                     if (auth()->user()->can('educations-edit')) {
-                        $actions .= '<a href="'.route('admin.education.edit', $education).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="bx bx-edit"></i></a>';
+                        $actions .= '<a href="'.route('admin.education.edit', $education).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit"><i class="ti ti-edit"></i></a>';
                     }
 
                     if (auth()->user()->can('educations-delete')) {
-                        $actions .= '<form method="POST" action="'.route('admin.education.destroy', $education).'" onsubmit="return confirm(\'Are you sure you want to delete this education?\')" class="d-inline">
-                            '.csrf_field().method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-icon btn-label-danger" title="Delete"><i class="bx bx-trash"></i></button>
-                        </form>';
+                        $actions .= '<button data-del-url="'.route('admin.education.destroy', $education).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
+                            <i class="ti ti-trash"></i>
+                        </button>';
                     }
 
                     $actions .= '</div>';
@@ -81,9 +79,8 @@ class EducationController extends AdminController
                     return $actions;
                 })
                 ->rawColumns(['degree', 'field', 'duration', 'location', 'status', 'actions'])
-                ->make(true);
+            ->make(true);
         }
-
         return view('admin.education.index');
     }
 
@@ -136,7 +133,7 @@ class EducationController extends AdminController
         $this->authorize('delete', $education);
         $education->delete();
 
-        return redirect()->route('admin.education.index')->with('success', 'Education deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Education deleted successfully.']);
     }
 
     public function toggleStatus(Request $request, Education $education)

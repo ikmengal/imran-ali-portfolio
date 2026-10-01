@@ -15,12 +15,18 @@ class ContactMessage extends Model
         'name',
         'email',
         'subject',
+        'category',
+        'status',
         'message',
+        'admin_reply',
+        'replied_at',
+        'replied_by',
         'read_at',
     ];
 
     protected $casts = [
         'read_at' => 'datetime',
+        'replied_at' => 'datetime',
     ];
 
     public function scopeUnread($query)
