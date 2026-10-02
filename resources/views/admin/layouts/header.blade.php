@@ -29,8 +29,8 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        @if (isset(auth()->user()->profile->profile_image) && !empty(auth()->user()->profile->profile_image))
-                            <img src="{{ asset('admin/assets/profile/profile_pic/' . auth()->user()->profile->profile_image) }}"
+                        @if (isset(auth()->user()->profile_image) && !empty(auth()->user()->profile_image))
+                            <img src="{{ asset('storage/'.auth()->user()->profile_image) }}"
                                 alt class="h-auto rounded-circle" />
                         @else
                             <img src="{{ asset('admin/default.png') }}" alt class="h-auto rounded-circle" />
@@ -43,8 +43,8 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        @if (isset(auth()->user()->profile->profile_image) && !empty(auth()->user()->profile->profile_image))
-                                            <img src="{{ asset('admin/assets/profile/profile_pic/' . auth()->user()->profile->profile_image) }}"
+                                        @if (isset(auth()->user()->profile_image) && !empty(auth()->user()->profile_image))
+                                            <img src="{{ asset('storage/'.auth()->user()->profile_image) }}"
                                                 alt class="h-auto rounded-circle" />
                                         @else
                                             <img src="{{ asset('admin/default.png') }}" alt class="h-auto rounded-circle" />

@@ -245,11 +245,11 @@
                             <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
-                                <input type="hidden" name="name" value="{{ $user->name }}">
-                                <input type="hidden" name="email" value="{{ $user->email }}">
-                                <input type="file" class="form-control mb-2" name="profile_image" accept="image/*">
-                                <small class="text-muted d-block mb-2">Recommended: 400x400px, JPG/PNG/WebP, Max 2MB</small>
-                                <button type="submit" class="btn btn-sm btn-primary">Upload Profile Image</button>
+                                    <input type="hidden" name="name" value="{{ $user->name }}">
+                                    <input type="hidden" name="email" value="{{ $user->email }}">
+                                    <input type="file" class="form-control mb-2" name="profile_image" accept="image/*">
+                                    <small class="text-muted d-block mb-2">Recommended: 400x400px, JPG/PNG/WebP, Max 2MB</small>
+                                    <button type="submit" class="btn btn-sm btn-primary">Upload Profile Image</button>
                                 @if ($user->profile_image)
                                     <button type="button" class="btn btn-sm btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteProfileImageModal">Remove</button>
                                 @endif
@@ -266,9 +266,9 @@
                         </div>
                         <div class="card-body text-center">
                             @if ($user->portfolio_header)
-                                <img src="{{ asset('storage/users/' . $user->portfolio_header) }}" alt="Portfolio Header" class="img-fluid rounded mb-3" style="max-width: 300px; height: auto;">
+                                <img src="{{ asset('storage/users/' . $user->portfolio_header) }}" alt="Portfolio Header" class="img-fluid rounded mb-3">
                             @else
-                                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded d-inline-flex align-items-center justify-content-center mb-3" style="width: 300px; height: 120px;">
+                                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded d-inline-flex align-items-center justify-content-center mb-3">
                                     <i class="ti ti-photo text-white" style="font-size: 2rem;"></i>
                                 </div>
                             @endif

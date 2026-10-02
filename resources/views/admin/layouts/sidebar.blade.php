@@ -30,6 +30,13 @@
             </a>
         </li>
 
+        <li class="menu-item {{ Route::is('portfolio*') ? 'active' : ''}}">
+            <a href="{{ route('portfolio') }}" class="menu-link" target="_blank">
+                <i class="menu-icon tf-icons ti ti-globe"></i>
+                <div data-i18n="Portfolio">View Portfolio</div>
+            </a>
+        </li>
+
         <li class="menu-item {{ Route::is('admin.profile*') ? 'active' : ''}}">
             <a href="{{ route('admin.profile.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-user"></i>

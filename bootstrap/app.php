@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Handler;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,4 +23,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+        
+        $exceptions->renderable(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            $handler = app(Handler::class);
+            
+            // Determine if this is an admin request
+            $isAdmin = $request->is('admin/*') || $request->is('admin') || 
+                       str_starts_with($request->path(), 'admin');
+
+            if ($isAdmin) {
+                return $handler->renderAdminError($e, $request);
+            }
+
+            return $handler->renderFrontendError($e, $request);
+        });
     })->create();
