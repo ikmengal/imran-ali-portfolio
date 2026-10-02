@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -24,6 +25,8 @@ Route::get('/', [PortfolioController::class, 'index'])->name('portfolio');
 require __DIR__.'/auth.php';
 
 Route::get('/{slug}', [PortfolioController::class, 'index'])->name('portfolio.user');
+    Route::get('/{slug}/project/{project:slug}', [PortfolioController::class, 'showProject'])->name('portfolio.project.show');
+    Route::get('/{slug}/page/{page:slug}', [PortfolioController::class, 'showPage'])->name('portfolio.page.show');
 
 Route::post('/contact', function (Request $request) {
     $validated = $request->validate([
@@ -47,6 +50,7 @@ Route::middleware(['auth', 'verified.or.superadmin', 'admin'])->prefix('admin')-
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::get('/profile/messages', [ProfileController::class, 'messages'])->name('profile.messages');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
@@ -68,6 +72,8 @@ Route::middleware(['auth', 'verified.or.superadmin', 'admin'])->prefix('admin')-
 
     Route::resource('testimonials', TestimonialController::class);
     Route::post('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
+
+    Route::resource('pages', PageController::class);
 
     Route::resource('roles', RoleController::class);
     Route::post('roles/bulk-permissions', [RoleController::class, 'bulkPermissions'])->name('roles.bulk-permissions');

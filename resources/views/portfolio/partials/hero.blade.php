@@ -41,11 +41,11 @@
                 @endif
 
                 <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-slide-up animation-delay-500">
-                    <a href="#contact" class="group flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-all duration-300 shadow-xl shadow-primary-500/30 hover:shadow-primary-500/40 hover:-translate-y-1">
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#contact" class="group flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-all duration-300 shadow-xl shadow-primary-500/30 hover:shadow-primary-500/40 hover:-translate-y-1">
                         <i class="ph-fill ph-paper-plane"></i>
                         Let's Work Together
                     </a>
-                    <a href="#projects" class="group flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300 hover:-translate-y-1">
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#projects" class="group flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300 hover:-translate-y-1">
                         <i class="ph-fill ph-folder"></i>
                         View Projects
                     </a>
@@ -159,7 +159,7 @@
                         <i class="ph-fill ph-terminal text-primary-600 dark:text-primary-400 text-2xl"></i>
                     </div>
                     <div class="w-16 h-16 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg animate-float animation-delay-1000 -mt-4">
-                        <i class="ph-fill ph-server text-accent-600 dark:text-accent-400 text-xl"></i>
+                        <i class="ph-fill ph-shield-check text-accent-600 dark:text-accent-400 text-xl"></i>
                     </div>
                     <div class="w-24 h-24 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-xl animate-float-slow animation-delay-500">
                         <i class="ph-fill ph-gear text-slate-600 dark:text-slate-400 text-2xl"></i>
@@ -169,7 +169,7 @@
         </div>
 
         <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce-slow" aria-hidden="true">
-            <a href="#about" class="w-10 h-10 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300">
+            <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#about" class="w-10 h-10 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300">
                 <i class="ph-fill ph-caret-double-down text-slate-600 dark:text-slate-400 text-xl"></i>
             </a>
         </div>

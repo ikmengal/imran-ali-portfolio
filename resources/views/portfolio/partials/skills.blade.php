@@ -75,34 +75,71 @@
 
         <div class="mt-16" data-aos="fade-up">
             <h3 class="font-space text-xl font-bold text-slate-900 dark:text-white text-center mb-8">Tools & Technologies</h3>
-            <div class="flex flex-wrap justify-center gap-3" role="list" aria-label="Tools and technologies">
-                @foreach([
-                    ['name' => 'Laravel', 'icon' => 'ph-fill ph-terminal', 'color' => 'red'],
-                    ['name' => 'PHP', 'icon' => 'ph-fill ph-code', 'color' => 'purple'],
-                    ['name' => 'Vue.js', 'icon' => 'ph-fill ph-device-mobile', 'color' => 'green'],
-                    ['name' => 'React', 'icon' => 'ph-fill ph-atom', 'color' => 'cyan'],
-                    ['name' => 'TypeScript', 'icon' => 'ph-fill ph-brackets-curly', 'color' => 'blue'],
-                    ['name' => 'Tailwind CSS', 'icon' => 'ph-fill ph-paint-brush-broad', 'color' => 'sky'],
-                    ['name' => 'PostgreSQL', 'icon' => 'ph-fill ph-database', 'color' => 'indigo'],
-                    ['name' => 'MySQL', 'icon' => 'ph-fill ph-cylinder', 'color' => 'orange'],
-                    ['name' => 'Redis', 'icon' => 'ph-fill ph-lightning', 'color' => 'red'],
-                    ['name' => 'Docker', 'icon' => 'ph-fill ph-box', 'color' => 'blue'],
-                    ['name' => 'AWS', 'icon' => 'ph-fill ph-cloud', 'color' => 'orange'],
-                    ['name' => 'Git', 'icon' => 'ph-fill ph-git-branch', 'color' => 'red'],
-                    ['name' => 'REST API', 'icon' => 'ph-fill ph-arrow-arc-right', 'color' => 'emerald'],
-                    ['name' => 'GraphQL', 'icon' => 'ph-fill ph-diagram', 'color' => 'pink'],
-                    ['name' => 'WebSockets', 'icon' => 'ph-fill ph-wifi-high', 'color' => 'violet'],
-                    ['name' => 'Linux', 'icon' => 'ph-fill ph-terminal-window', 'color' => 'yellow'],
-                ] as $index => $tool)
-                    <div class="group tool-card relative px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-{{ $tool['color'] }}-300 dark:hover:border-{{ $tool['color'] }}-700 transition-all duration-300 hover:shadow-lg hover:shadow-{{ $tool['color'] }}-500/10 dark:hover:shadow-{{ $tool['color'] }}-900/10" data-aos="zoom-in" data-aos-delay="{{ $index * 30 }}">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-{{ $tool['color'] }}-100 dark:bg-{{ $tool['color'] }}-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                <i class="{{ $tool['icon'] }} text-{{ $tool['color'] }}-600 dark:text-{{ $tool['color'] }}-400 text-sm"></i>
+            
+            <!-- First Row - Left to Right -->
+            <div class="overflow-hidden mb-8">
+                <div class="flex animate-scroll flex-wrap justify-center gap-3" role="list" aria-label="Tools and technologies" id="tools-track-1">
+                    @foreach([
+                        ['name' => 'Laravel', 'icon' => 'ph-fill ph-terminal', 'color' => 'red'],
+                        ['name' => 'PHP', 'icon' => 'ph-fill ph-code', 'color' => 'purple'],
+                        ['name' => 'Vue.js', 'icon' => 'ph-fill ph-device-mobile', 'color' => 'green'],
+                        ['name' => 'React', 'icon' => 'ph-fill ph-atom', 'color' => 'cyan'],
+                        ['name' => 'TypeScript', 'icon' => 'ph-fill ph-brackets-curly', 'color' => 'blue'],
+                        ['name' => 'Tailwind CSS', 'icon' => 'ph-fill ph-paint-brush-broad', 'color' => 'sky'],
+                        ['name' => 'PostgreSQL', 'icon' => 'ph-fill ph-database', 'color' => 'indigo'],
+                        ['name' => 'MySQL', 'icon' => 'ph-fill ph-cylinder', 'color' => 'orange'],
+                        ['name' => 'Redis', 'icon' => 'ph-fill ph-lightning', 'color' => 'red'],
+                        ['name' => 'Docker', 'icon' => 'ph-fill ph-box', 'color' => 'blue'],
+                        ['name' => 'AWS', 'icon' => 'ph-fill ph-cloud', 'color' => 'orange'],
+                        ['name' => 'Git', 'icon' => 'ph-fill ph-git-branch', 'color' => 'red'],
+                        ['name' => 'REST API', 'icon' => 'ph-fill ph-arrow-arc-right', 'color' => 'emerald'],
+                        ['name' => 'GraphQL', 'icon' => 'ph-fill ph-diagram', 'color' => 'pink'],
+                        ['name' => 'WebSockets', 'icon' => 'ph-fill ph-wifi-high', 'color' => 'violet'],
+                        ['name' => 'Linux', 'icon' => 'ph-fill ph-terminal-window', 'color' => 'yellow'],
+                    ] as $index => $tool)
+                        <div class="group tool-card relative px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-{{ $tool['color'] }}-300 dark:hover:border-{{ $tool['color'] }}-700 transition-all duration-300 hover:shadow-lg hover:shadow-{{ $tool['color'] }}-500/10 dark:hover:shadow-{{ $tool['color'] }}-900/10 flex-shrink-0" data-aos="zoom-in" data-aos-delay="{{ $index * 30 }}">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-{{ $tool['color'] }}-100 dark:bg-{{ $tool['color'] }}-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <i class="{{ $tool['icon'] }} text-{{ $tool['color'] }}-600 dark:text-{{ $tool['color'] }}-400 text-sm"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ $tool['name'] }}</span>
                             </div>
-                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ $tool['name'] }}</span>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
+            </div>
+            
+            <!-- Second Row - Right to Left -->
+            <div class="overflow-hidden">
+                <div class="flex animate-scroll-reverse flex-wrap justify-center gap-3" role="list" aria-label="Tools and technologies" id="tools-track-2">
+                    @foreach([
+                        ['name' => 'Kubernetes', 'icon' => 'ph-fill ph-gear-six', 'color' => 'blue'],
+                        ['name' => 'NGINX', 'icon' => 'ph-fill ph-server', 'color' => 'green'],
+                        ['name' => 'Apache', 'icon' => 'ph-fill ph-feather', 'color' => 'red'],
+                        ['name' => 'MongoDB', 'icon' => 'ph-fill ph-database', 'color' => 'green'],
+                        ['name' => 'Firebase', 'icon' => 'ph-fill ph-fire', 'color' => 'orange'],
+                        ['name' => 'Supabase', 'icon' => 'ph-fill ph-cloud', 'color' => 'green'],
+                        ['name' => 'Vercel', 'icon' => 'ph-fill ph-globe', 'color' => 'gray'],
+                        ['name' => 'Netlify', 'icon' => 'ph-fill ph-shield-check', 'color' => 'emerald'],
+                        ['name' => 'Figma', 'icon' => 'ph-fill ph-pen-nib', 'color' => 'purple'],
+                        ['name' => 'Adobe XD', 'icon' => 'ph-fill ph-paint-brush', 'color' => 'pink'],
+                        ['name' => 'Jira', 'icon' => 'ph-fill ph-ticket', 'color' => 'blue'],
+                        ['name' => 'Trello', 'icon' => 'ph-fill ph-columns', 'color' => 'blue'],
+                        ['name' => 'Slack', 'icon' => 'ph-fill ph-chat-circle', 'color' => 'purple'],
+                        ['name' => 'Notion', 'icon' => 'ph-fill ph-file-text', 'color' => 'gray'],
+                        ['name' => 'VS Code', 'icon' => 'ph-fill ph-code', 'color' => 'blue'],
+                        ['name' => 'Postman', 'icon' => 'ph-fill ph-paper-plane', 'color' => 'orange'],
+                    ] as $index => $tool)
+                        <div class="group tool-card relative px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-{{ $tool['color'] }}-300 dark:hover:border-{{ $tool['color'] }}-700 transition-all duration-300 hover:shadow-lg hover:shadow-{{ $tool['color'] }}-500/10 dark:hover:shadow-{{ $tool['color'] }}-900/10 flex-shrink-0" data-aos="zoom-in" data-aos-delay="{{ $index * 30 }}">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-{{ $tool['color'] }}-100 dark:bg-{{ $tool['color'] }}-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <i class="{{ $tool['icon'] }} text-{{ $tool['color'] }}-600 dark:text-{{ $tool['color'] }}-400 text-sm"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ $tool['name'] }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>

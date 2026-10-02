@@ -66,6 +66,28 @@ class PermissionSeeder extends Seeder
                 'name' => 'roles-show',
             ],
 
+            // Pages
+            [
+                'label' => 'pages',
+                'name' => 'pages-list',
+            ],
+            [
+                'label' => 'pages',
+                'name' => 'pages-create',
+            ],
+            [
+                'label' => 'pages',
+                'name' => 'pages-edit',
+            ],
+            [
+                'label' => 'pages',
+                'name' => 'pages-delete',
+            ],
+            [
+                'label' => 'pages',
+                'name' => 'pages-show',
+            ],
+
             // Users
             [
                 'label' => 'users',

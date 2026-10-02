@@ -123,12 +123,12 @@
                             <h3 class="mb-0">{{ $stats['services'] }}</h3>
                             <small class="text-muted">{{ $analytics['visible_services'] }} visible on portfolio</small>
                         </div>
-                        <div class="badge bg-label-warning p-3 rounded stats-icon">
+                        <div class="badge bg-label-secondary p-3 rounded stats-icon">
                             <i class="ti ti-tool ti-lg"></i>
                         </div>
                     </div>
                     <div class="mt-3 d-flex gap-4 text-sm">
-                        <span class="text-warning"><i class="ti ti-star"></i> {{ $analytics['featured_services'] }} Featured</span>
+                        <span class="secondary"><i class="ti ti-star"></i> {{ $analytics['featured_services'] }} Featured</span>
                     </div>
                 </div>
             </div>
@@ -143,7 +143,7 @@
                             <h3 class="mb-0">{{ $stats['testimonials'] }}</h3>
                             <small class="text-muted">{{ $analytics['visible_testimonials'] }} visible on portfolio</small>
                         </div>
-                        <div class="badge bg-label-secondary p-3 rounded stats-icon">
+                        <div class="badge bg-label-warning p-3 rounded stats-icon">
                             <i class="ti ti-quote ti-lg"></i>
                         </div>
                     </div>
@@ -621,7 +621,7 @@
                     maxBarThickness: 40
                 }, {
                     label: 'Avg Proficiency %',
-                    data: skillsCatData.map(s => Math.round(s.avg_percentage || 0)),
+                    data: skillsCatData.map(s => Math.round(Number(s.avg_percentage) || 0)),
                     type: 'line',
                     borderColor: chartColors.warning,
                     backgroundColor: chartColors.warning,

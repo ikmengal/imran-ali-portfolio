@@ -22,6 +22,7 @@ class ContactMessage extends Model
         'replied_at',
         'replied_by',
         'read_at',
+        'assigned_to',
     ];
 
     protected $casts = [
@@ -42,5 +43,15 @@ class ContactMessage extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function repliedBy()
+    {
+        return $this->belongsTo(User::class, 'replied_by');
     }
 }

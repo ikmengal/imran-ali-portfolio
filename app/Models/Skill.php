@@ -27,7 +27,7 @@ class Skill extends Model
     {
         static::creating(function (Skill $skill) {
             if (empty($skill->slug)) {
-                $skill->slug = Str::slug($skill->name);
+                $skill->slug = Str::slug($skill->name).'-'.Str::random(5);
             }
         });
     }

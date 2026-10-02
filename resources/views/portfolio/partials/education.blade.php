@@ -1,6 +1,6 @@
 <section id="education" class="py-20 lg:py-32 bg-slate-50 dark:bg-slate-900 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-violet-50/30 to-transparent dark:via-violet-900/10 pointer-events-none"></div>
-    
+
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16" data-aos="fade-up">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-sm font-medium mb-4">
@@ -20,10 +20,10 @@
                 @foreach($education as $index => $edu)
                     <div class="relative bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-violet-300 dark:hover:border-violet-700 group" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-violet-500/10 to-transparent rounded-tr-2xl rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        
+
                         <div class="flex items-start gap-4 relative z-10">
                             <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                                <i class="ph-fill ph-university text-white text-xl"></i>
+                                <i class="ph-fill ph-graduation-cap text-white text-xl"></i>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-2">

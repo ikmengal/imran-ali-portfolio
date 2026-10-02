@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Education;
 use App\Models\Experience;
+use App\Models\Page;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Skill;
@@ -47,5 +48,36 @@ class PortfolioController extends Controller
             'services',
             'testimonials'
         ));
+    }
+
+    public function showProject($slug, Project $project)
+    {
+        $user = User::where('portfolio_slug', $slug)->firstOrFail();
+        
+        // Verify project belongs to this user
+        if ($project->user_id !== $user->id) {
+            abort(404);
+        }
+        
+        $relatedProjects = $user->projects()->visible()->where('id', '!=', $project->id)->latest()->take(3)->get();
+        
+        return view('portfolio.project-detail', compact('project', 'user', 'relatedProjects'));
+    }
+
+    public function showPage($slug, Page $page)
+    {
+        $user = User::where('portfolio_slug', $slug)->firstOrFail();
+        
+        // Verify page belongs to this user
+        if ($page->user_id !== $user->id) {
+            abort(404);
+        }
+        
+        // Check if page is visible
+        if (!$page->is_visible) {
+            abort(404);
+        }
+        
+        return view('portfolio.page', compact('page', 'user'));
     }
 }

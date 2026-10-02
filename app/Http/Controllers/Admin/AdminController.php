@@ -29,7 +29,7 @@ class AdminController extends Controller
         $model = $query->getModel();
         $table = $model->getTable();
 
-        $userOwnedTables = ['educations', 'experiences', 'projects', 'skills', 'services', 'testimonials'];
+        $userOwnedTables = ['education', 'experiences', 'projects', 'skills', 'services', 'testimonials'];
 
         if (in_array($table, $userOwnedTables)) {
             return $query->where('user_id', $user->id);
@@ -118,7 +118,7 @@ class AdminController extends Controller
         $model = $record;
         $table = $model->getTable();
 
-        $userOwnedTables = ['educations', 'experiences', 'projects', 'skills', 'services', 'testimonials'];
+        $userOwnedTables = ['education', 'experiences', 'projects', 'skills', 'services', 'testimonials'];
 
         if (in_array($table, $userOwnedTables)) {
             if ($record->user_id !== $user->id) {
@@ -179,7 +179,7 @@ class AdminController extends Controller
 
         // Skills breakdown by category
         $skillsByCategory = $baseQuery(Skill::class)->where('is_visible', true)
-            ->selectRaw('category, count(*) as count, avg(percentage) as avg_percentage')
+            ->selectRaw('category, count(*) as count, CAST(AVG(percentage) AS DECIMAL(10,2)) as avg_percentage')
             ->groupBy('category')
             ->orderByDesc('count')
             ->get();

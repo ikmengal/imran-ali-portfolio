@@ -19,6 +19,40 @@
             <div class="relative">
                 <div class="overflow-hidden">
                     <div id="testimonials-track" class="flex transition-transform duration-500 ease-out">
+                        <!-- Clone last items for infinite loop -->
+                        @foreach($testimonials->slice(-3) as $index => $testimonial)
+                            <div class="testimonial-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 px-4 clone">
+                                <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                                    <div class="flex items-center gap-1 mb-4">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="ph-fill ph-star text-amber-400 text-lg" style="color: {{ $i <= $testimonial->rating ? '#fbbf24' : '#d1d5db' }}"></i>
+                                        @endfor
+                                    </div>
+                                    
+                                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-[text-align:justify]">"{{ $testimonial->message }}"</p>
+                                    
+                                    <div class="flex items-center gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                        @if($testimonial->image)
+                                            <img src="{{ asset('storage/' . $testimonial->image) }}" alt="{{ $testimonial->name }}" class="w-12 h-12 rounded-full object-cover">
+                                        @else
+                                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                                                <span class="font-bold text-white text-lg">{{ strtoupper($testimonial->name[0]) }}</span>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <p class="font-medium text-slate-900 dark:text-white">{{ $testimonial->name }}</p>
+                                            @if($testimonial->designation)
+                                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ $testimonial->designation }}</p>
+                                            @endif
+                                            @if($testimonial->company)
+                                                <p class="text-sm text-pink-600 dark:text-pink-400">{{ $testimonial->company }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
                         @foreach($testimonials as $index => $testimonial)
                             <div class="testimonial-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 px-4">
                                 <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
@@ -28,7 +62,41 @@
                                         @endfor
                                     </div>
                                     
-                                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">"{{ $testimonial->message }}"</p>
+                                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-[text-align:justify]">"{{ $testimonial->message }}"</p>
+                                    
+                                    <div class="flex items-center gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                        @if($testimonial->image)
+                                            <img src="{{ asset('storage/' . $testimonial->image) }}" alt="{{ $testimonial->name }}" class="w-12 h-12 rounded-full object-cover">
+                                        @else
+                                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                                                <span class="font-bold text-white text-lg">{{ strtoupper($testimonial->name[0]) }}</span>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <p class="font-medium text-slate-900 dark:text-white">{{ $testimonial->name }}</p>
+                                            @if($testimonial->designation)
+                                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ $testimonial->designation }}</p>
+                                            @endif
+                                            @if($testimonial->company)
+                                                <p class="text-sm text-pink-600 dark:text-pink-400">{{ $testimonial->company }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <!-- Clone first items for infinite loop -->
+                        @foreach($testimonials->take(3) as $index => $testimonial)
+                            <div class="testimonial-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 px-4 clone">
+                                <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                                    <div class="flex items-center gap-1 mb-4">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="ph-fill ph-star text-amber-400 text-lg" style="color: {{ $i <= $testimonial->rating ? '#fbbf24' : '#d1d5db' }}"></i>
+                                        @endfor
+                                    </div>
+                                    
+                                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-[text-align:justify]">"{{ $testimonial->message }}"</p>
                                     
                                     <div class="flex items-center gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                                         @if($testimonial->image)

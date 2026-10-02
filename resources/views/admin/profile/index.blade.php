@@ -17,6 +17,11 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="{{ route('admin.profile.messages') }}" role="tab">
+                        <i class="ti ti-mail me-2"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="social-links-tab" data-bs-toggle="pill" data-bs-target="#social-links" type="button" role="tab">
                         <i class="ti ti-share me-2"></i> Social Links
                     </button>

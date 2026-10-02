@@ -2,10 +2,6 @@
 
 @section('title', 'Roles')
 
-@section('css')
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendor/libs/select2/select2.css') }}" />
-@endsection
-
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -17,9 +13,6 @@
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRoleModal">
                     <i class="ti ti-plus me-1"></i> Create Role
-                </button>
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#managePermissionsModal">
-                    <i class="ti ti-lock me-1"></i> Manage Permissions
                 </button>
             </div>
         </div>
@@ -100,6 +93,13 @@
 
                     <div class="mb-3">
                         <label class="form-label">Permissions</label>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Select/deselect permissions for this role</span>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-outline-primary" id="checkAllCreatePermissions">Check All</button>
+                                <button type="button" class="btn btn-outline-secondary" id="uncheckAllCreatePermissions">Uncheck All</button>
+                            </div>
+                        </div>
                         @foreach($permissions as $label => $perms)
                             <div class="mb-3">
                                 <h6 class="text-muted text-uppercase fw-bold mb-2">{{ $label }}</h6>
@@ -183,62 +183,6 @@
     </div>
 </div>
 
-<!-- Manage Permissions Modal (Bulk) -->
-<div class="modal fade" id="managePermissionsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Manage Permissions</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Select Role</label>
-                        <select class="form-select select2" id="bulkRoleSelect">
-                            <option value="">-- Select Role --</option>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->name }} ({{ $role->users()->count() }} users)</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="d-flex gap-2 mt-4">
-                            <button type="button" class="btn btn-outline-primary" id="checkAllBulk">Check All</button>
-                            <button type="button" class="btn btn-outline-secondary" id="uncheckAllBulk">Uncheck All</button>
-                        </div>
-                    </div>
-                </div>
-                <form action="{{ route('admin.roles.bulk-permissions') }}" method="POST" id="bulkPermissionsForm">
-                    @csrf
-                    <input type="hidden" name="role_id" id="bulkRoleId">
-                    @foreach($permissions as $label => $perms)
-                        <div class="mb-3">
-                            <h6 class="text-muted text-uppercase fw-bold mb-2">{{ $label }}</h6>
-                            <div class="row g-2">
-                                @foreach($perms as $perm)
-                                    <div class="col-md-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input bulk-permission-checkbox" type="checkbox" name="permissions[]" value="{{ $perm->name }}" id="bulk_perm_{{ $perm->name }}">
-                                            <label class="form-check-label" for="bulk_perm_{{ $perm->name }}">
-                                                {{ $perm->name }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveBulkPermissions">Save Permissions</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Delete Role Confirmation Modal -->
 <div class="modal fade" id="deleteRoleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -266,19 +210,50 @@
 @endsection
 
 @push('js')
-<script src="{{ asset('admin/assets/vendor/libs/select2/select2.js') }}"></script>
 <script>
     $(document).ready(function() {
-        // Initialize Select2
-        $('.select2').select2({
-            dropdownParent: $('.modal'),
-            width: '100%'
+        // Create Role Form - AJAX Submit
+        $('#createRoleForm').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const submitBtn = form.find('button[type="submit"]');
+            const originalText = submitBtn.html();
+
+            submitBtn.prop('disabled', true).html('<i class="ph-fill ph-spinner animate-spin"></i> Creating...');
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    $('#createRoleModal').modal('hide');
+                    form[0].reset();
+                    toastr.success('Role created successfully.');
+                    setTimeout(function() { location.reload(); }, 1000);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        let errorMsg = '';
+                        $.each(errors, function(key, val) {
+                            errorMsg += val[0] + '<br>';
+                        });
+                        toastr.error(errorMsg);
+                    } else {
+                        toastr.error('Failed to create role.');
+                    }
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
         });
 
-        // Edit Role Modal - Load role data
-        $(document).on('click', '.edit-role-btn', function() {
-            const roleId = $(this).data('role-id');
-            const roleName = $(this).data('role-name');
+        // Edit Role Modal - Load role data when modal shows
+        $('#editRoleModal').on('show.bs.modal', function(e) {
+            const button = $(e.relatedTarget);
+            const roleId = button.data('role-id');
+            const roleName = button.data('role-name');
 
             $('#editRoleId').val(roleId);
             $('#editRoleName').text(roleName);
@@ -296,7 +271,7 @@
                 success: function(response) {
                     if (response.permissions) {
                         response.permissions.forEach(function(permName) {
-                            $('#edit_perm_' + permName).prop('checked', true);
+                            $('input.permission-checkbox[value="' + permName + '"]').prop('checked', true);
                         });
                     }
                 }
@@ -311,46 +286,48 @@
             $('.permission-checkbox').prop('checked', false);
         });
 
-        // Check/Uncheck all permissions in bulk modal
-        $('#checkAllBulk').on('click', function() {
-            $('.bulk-permission-checkbox').prop('checked', true);
-        });
-        $('#uncheckAllBulk').on('click', function() {
-            $('.bulk-permission-checkbox').prop('checked', false);
-        });
+        // Edit Role Form - AJAX Submit
+        $('#editRoleForm').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const submitBtn = form.find('button[type="submit"]');
+            const originalText = submitBtn.html();
 
-        // Bulk Role Select - Load permissions for selected role
-        $('#bulkRoleSelect').on('change', function() {
-            const roleId = $(this).val();
-            $('#bulkRoleId').val(roleId);
-            $('.bulk-permission-checkbox').prop('checked', false);
+            submitBtn.prop('disabled', true).html('<i class="ph-fill ph-spinner animate-spin"></i> Updating...');
 
-            if (roleId) {
-                $.ajax({
-                    url: '{{ route('admin.roles.show', ':id') }}'.replace(':id', roleId),
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.permissions) {
-                            response.permissions.forEach(function(permName) {
-                                $('#bulk_perm_' + permName).prop('checked', true);
-                            });
-                        }
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    $('#editRoleModal').modal('hide');
+                    toastr.success('Role updated successfully.');
+                    setTimeout(function() { location.reload(); }, 1000);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        let errorMsg = '';
+                        $.each(errors, function(key, val) {
+                            errorMsg += val[0] + '<br>';
+                        });
+                        toastr.error(errorMsg);
+                    } else {
+                        toastr.error('Failed to update role.');
                     }
-                });
-            }
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
         });
 
-        // Save Bulk Permissions
-        $('#saveBulkPermissions').on('click', function() {
-            const roleId = $('#bulkRoleId').val();
-            if (!roleId) {
-                toastr.error('Please select a role first');
-                return;
-            }
-
-            $('#bulkPermissionsForm').attr('action', '{{ route('admin.roles.bulk-permissions') }}');
-            $('#bulkPermissionsForm').submit();
+        // Check/Uncheck all permissions in create modal
+        $('#checkAllCreatePermissions').on('click', function() {
+            $('#createRoleForm input[type="checkbox"]').prop('checked', true);
+        });
+        $('#uncheckAllCreatePermissions').on('click', function() {
+            $('#createRoleForm input[type="checkbox"]').prop('checked', false);
         });
 
         // Delete Role

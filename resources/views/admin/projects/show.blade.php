@@ -51,7 +51,7 @@
 
         <div class="col-md-8">
             <x-admin.card title="Description">
-                <div class="prose">{{ $project->description }}</div>
+                <div class="prose">{!! $project->description !!}</div>
             </x-admin.card>
 
             <x-admin.card title="Short Description" class="mt-3">

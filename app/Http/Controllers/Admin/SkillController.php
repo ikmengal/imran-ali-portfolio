@@ -9,7 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SkillController extends AdminController
 {
-public function index(Request $request)
+    public function index(Request $request)
     {
         $filters = $this->getFilters(Skill::class);
         $categories = Skill::query()->select('category')->distinct()->pluck('category')->filter()->values();

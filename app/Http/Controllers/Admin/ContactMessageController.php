@@ -69,14 +69,16 @@ class ContactMessageController extends AdminController
                 ->addColumn('actions', function ($message) {
                     $actions = '<div class="d-flex justify-content-end gap-2">';
                         if (auth()->user()->can('contact_messages-show')) {
-                            $actions .= '<a href="'.route('admin.messages.show', $message).'" class="btn btn-sm btn-icon btn-label-info" title="View">
+                            $actions .= '<button type="button" class="btn btn-sm btn-icon btn-label-info view-message-btn" title="View"
+                                data-message-id="'.$message->id.'">
                                 <i class="ti ti-eye"></i>
-                            </a>';
+                            </button>';
                         }
                         if (auth()->user()->can('contact_messages-edit') && ! $message->trashed()) {
-                            $actions .= '<a href="'.route('admin.messages.edit', $message).'" class="btn btn-sm btn-icon btn-label-primary" title="Reply/Edit">
+                            $actions .= '<button type="button" class="btn btn-sm btn-icon btn-label-primary edit-message-btn" title="Reply/Edit"
+                                data-message-id="'.$message->id.'">
                                 <i class="ti ti-mail-edit"></i>
-                            </a>';
+                            </button>';
                         }
                         if (auth()->user()->can('contact_messages-delete')) {
                             if ($message->trashed()) {
@@ -107,6 +109,15 @@ class ContactMessageController extends AdminController
     {
         $this->authorize('view', $message);
 
+        // Auto mark as read when viewed
+        if (!$message->read_at) {
+            $message->update(['read_at' => now()]);
+        }
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return view('admin.messages.partials._show', compact('message'))->render();
+        }
+
         return view('admin.messages.show', compact('message'));
     }
 
@@ -114,10 +125,35 @@ class ContactMessageController extends AdminController
     {
         $this->authorize('update', $message);
 
-        return view('admin.messages.edit', compact('message'));
+        $admins = \App\Models\User::whereHas('roles', function($q) { $q->whereIn('name', ['Super Admin', 'Admin']); })->get(['id', 'name']);
+
+        if (request()->ajax() || request()->wantsJson()) {
+            $message->load('assignedTo');
+            return response()->json([
+                'message' => [
+                    'id' => $message->id,
+                    'name' => $message->name,
+                    'email' => $message->email,
+                    'subject' => $message->subject,
+                    'category' => $message->category,
+                    'status' => $message->status,
+                    'message' => $message->message,
+                    'admin_reply' => $message->admin_reply,
+                    'replied_at' => $message->replied_at?->format('M d, Y H:i'),
+                    'created_at' => $message->created_at->format('M d, Y H:i'),
+                    'read_at' => $message->read_at?->format('M d, Y H:i'),
+                    'assigned_to' => $message->assigned_to,
+                    'assignedTo' => $message->assignedTo,
+                    'repliedBy' => $message->repliedBy,
+                ],
+                'admins' => $admins,
+            ]);
+        }
+
+        return view('admin.messages.edit', compact('message', 'admins'));
     }
 
-    public function update(Request $request, ContactMessage $message)
+public function update(Request $request, ContactMessage $message)
     {
         $this->authorize('update', $message);
 
@@ -128,12 +164,16 @@ class ContactMessageController extends AdminController
             'admin_reply' => 'nullable|string',
         ]);
 
-        if ($request->filled('admin_reply') && ! $message->replied_at) {
+        if ($request->filled('admin_reply') && !$message->replied_at) {
             $validated['replied_at'] = now();
             $validated['replied_by'] = Auth::id();
         }
 
         $message->update($validated);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Message updated successfully.']);
+        }
 
         return redirect()->route('admin.messages.index')->with('success', 'Message updated successfully.');
     }
@@ -142,6 +182,10 @@ class ContactMessageController extends AdminController
     {
         $this->authorize('delete', $message);
         $message->delete();
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Message deleted successfully.']);
+        }
 
         return redirect()->route('admin.messages.index')->with('success', 'Message deleted successfully.');
     }

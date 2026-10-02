@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\ContactMessage;
 use App\Models\Education;
 use App\Models\Experience;
+use App\Models\Page;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Skill;
@@ -15,6 +16,7 @@ use Spatie\Permission\Models\Role;
 use App\Policies\ContactMessagePolicy;
 use App\Policies\EducationPolicy;
 use App\Policies\ExperiencePolicy;
+use App\Policies\PagePolicy;
 use App\Policies\PermissionPolicy;
 use App\Policies\ProjectPolicy;
 use App\Policies\RolePolicy;
@@ -39,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Role::class => RolePolicy::class,
         Permission::class => PermissionPolicy::class,
+        Page::class => PagePolicy::class,
     ];
 
     /**

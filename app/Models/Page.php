@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class Project extends Model
+class Page extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -15,40 +15,30 @@ class Project extends Model
         'user_id',
         'title',
         'slug',
-        'short_description',
-        'description',
-        'image',
-        'github_url',
-        'live_url',
-        'category',
-        'is_featured',
+        'banner_image',
+        'banner_alt',
+        'banner_overlay',
+        'content',
+        'meta_title',
+        'meta_description',
         'is_visible',
+        'show_in_footer',
         'sort_order',
     ];
 
     protected $casts = [
-        'is_featured' => 'boolean',
         'is_visible' => 'boolean',
+        'show_in_footer' => 'boolean',
+        'banner_overlay' => 'boolean',
     ];
 
     protected static function booted(): void
     {
-        static::creating(function (Project $project) {
-            if (empty($project->slug)) {
-                $project->slug = Str::slug($project->title);
+        static::creating(function (Page $page) {
+            if (empty($page->slug)) {
+                $page->slug = Str::slug($page->title);
             }
         });
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
-    public function technologies()
-    {
-        return $this->hasMany(ProjectTechnology::class)
-            ->orderBy('sort_order');
     }
 
     public function scopeVisible($query)
@@ -56,14 +46,19 @@ class Project extends Model
         return $query->where('is_visible', true);
     }
 
-    public function scopeFeatured($query)
+    public function scopeInFooter($query)
     {
-        return $query->where('is_featured', true);
+        return $query->where('show_in_footer', true);
     }
 
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 
     public function user()

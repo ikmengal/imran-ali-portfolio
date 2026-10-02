@@ -50,9 +50,10 @@ class PermissionController extends AdminController
                         </a>';
                     }
                     if (auth()->user()->can('permissions-edit')) {
-                        $actions .= '<a href="'.route('admin.permissions.edit', $permission).'" class="btn btn-sm btn-icon btn-label-primary" title="Edit">
+                        $actions .= '<button type="button" class="btn btn-sm btn-icon btn-label-primary edit-permission-btn" title="Edit"
+                            data-permission-id="'.$permission->id.'" data-permission-name="'.$permission->name.'">
                             <i class="ti ti-edit"></i>
-                        </a>';
+                        </button>';
                     }
                     if (auth()->user()->can('permissions-delete')) {
                         $actions .= '<button data-del-url="'.route('admin.permissions.destroy', $permission).'" class="btn btn-sm btn-icon btn-label-danger delete" title="Delete">
@@ -62,7 +63,7 @@ class PermissionController extends AdminController
                     $actions .= '</div>';
                     return $actions;
                 })
-                ->rawColumns(['name', 'label', 'roles', 'actions'])
+                ->rawColumns(['name', 'label', 'roles', 'created_at', 'actions'])
                 ->make(true);
         }
 
@@ -85,11 +86,15 @@ class PermissionController extends AdminController
             'label' => 'required|string|max:255',
         ]);
 
-        Permission::create([
+        $permission = Permission::create([
             'name' => $validated['name'],
             'label' => $validated['label'],
             'guard_name' => 'web',
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Permission created successfully.']);
+        }
 
         return redirect()->route('admin.permissions.index')->with('success', 'Permission created successfully.');
     }
@@ -104,6 +109,15 @@ class PermissionController extends AdminController
     public function edit(Permission $permission)
     {
         $this->authorize('update', $permission);
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'label' => $permission->label,
+            ]);
+        }
+
         $roles = Role::where('guard_name', 'web')->get();
         return view('admin.permissions.edit', compact('permission', 'roles'));
     }
@@ -119,6 +133,10 @@ class PermissionController extends AdminController
 
         $permission->update($validated);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Permission updated successfully.']);
+        }
+
         return redirect()->route('admin.permissions.index')->with('success', 'Permission updated successfully.');
     }
 
@@ -126,6 +144,10 @@ class PermissionController extends AdminController
     {
         $this->authorize('delete', $permission);
         $permission->delete();
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Permission deleted successfully.']);
+        }
 
         return redirect()->route('admin.permissions.index')->with('success', 'Permission deleted successfully.');
     }

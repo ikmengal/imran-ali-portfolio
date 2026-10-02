@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,17 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         return view('admin.profile.index', compact('user'));
+    }
+
+    public function messages()
+    {
+        $user = Auth::user();
+        $messages = ContactMessage::where('email', $user->email)
+            ->orWhere('user_id', $user->id)
+            ->latest()
+            ->paginate(15);
+        
+        return view('admin.profile.messages', compact('messages'));
     }
 
     public function update(Request $request)

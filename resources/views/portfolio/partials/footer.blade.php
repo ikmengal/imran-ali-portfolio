@@ -59,24 +59,48 @@
             
             <div>
                 <h4 class="font-space font-bold text-white mb-4">Quick Links</h4>
-                <nav class="space-y-3">
-                    <a href="#about" class="text-slate-400 hover:text-primary-400 transition-colors">About Me</a>
-                    <a href="#skills" class="text-slate-400 hover:text-primary-400 transition-colors">Skills</a>
-                    <a href="#experience" class="text-slate-400 hover:text-primary-400 transition-colors">Experience</a>
-                    <a href="#projects" class="text-slate-400 hover:text-primary-400 transition-colors">Projects</a>
-                    <a href="#services" class="text-slate-400 hover:text-primary-400 transition-colors">Services</a>
-                    <a href="#testimonials" class="text-slate-400 hover:text-primary-400 transition-colors">Testimonials</a>
-                    <a href="#contact" class="text-slate-400 hover:text-primary-400 transition-colors">Contact</a>
+                <nav class="space-y-3 grid grid-cols-2 gap-y-3 gap-x-6">
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#about" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> About Me
+                    </a>
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#skills" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> Skills
+                    </a>
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#experience" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> Experience
+                    </a>
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#projects" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> Projects
+                    </a>
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#services" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> Services
+                    </a>
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#testimonials" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> Testimonials
+                    </a>
+                    <a href="{{ route('portfolio.user', $user->portfolio_slug) }}#contact" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class="ph-fill ph-caret-right text-xs"></i> Contact
+                    </a>
                 </nav>
             </div>
             
             <div>
-                <h4 class="font-space font-bold text-white mb-4">Technologies</h4>
-                <div class="flex flex-wrap gap-2">
-                    @foreach(['Laravel', 'PHP', 'Vue.js', 'React', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'MySQL', 'Redis', 'Docker', 'AWS', 'Git'] as $tech)
-                        <span class="px-3 py-1 text-xs font-medium rounded-full bg-slate-800 text-slate-300 hover:text-primary-400 hover:bg-primary-500/20 transition-colors">{{ $tech }}</span>
-                    @endforeach
-                </div>
+                <h4 class="font-space font-bold text-white mb-4">Legal</h4>
+                <nav class="space-y-3">
+                    @php
+                        $footerPages = \App\Models\Page::visible()->inFooter()->ordered()->get();
+                    @endphp
+                    @if($footerPages->isNotEmpty())
+                        @foreach($footerPages as $page)
+                            <a href="{{ route('portfolio.page.show', [$user->portfolio_slug, $page->slug]) }}" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center gap-2">
+                                <i class="ph-fill ph-shield-check text-xs"></i> {{ $page->title }}
+                            </a>
+                        @endforeach
+                    @else
+                        <a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Terms of Service</a>
+                    @endif
+                </nav>
             </div>
         </div>
         
@@ -89,12 +113,6 @@
                 @if($user->professional_title)
                 <p class="text-slate-500 text-sm">{{ $user->professional_title }}</p>
                 @endif
-                
-                <div class="flex items-center gap-4 text-sm text-slate-500">
-                    <a href="#" class="hover:text-primary-400 transition-colors">Privacy Policy</a>
-                    <span>/</span>
-                    <a href="#" class="hover:text-primary-400 transition-colors">Terms of Service</a>
-                </div>
                 
                 <div class="flex items-center gap-2 text-slate-500">
                     <i class="ph-fill ph-heart text-red-500 text-lg animate-pulse"></i>

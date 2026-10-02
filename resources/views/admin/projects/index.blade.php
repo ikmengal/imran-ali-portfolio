@@ -45,7 +45,7 @@
         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
             <div class="table-responsive">
                 <table class="projectsTable table border-top table-striped dataTable no-footer dtr-column data_table table-responsive table-hover nowrap w-100"
-                    id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+                    id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" style="display: table;">
                     <thead>
                         <tr>
                             <th>S.No</th>
